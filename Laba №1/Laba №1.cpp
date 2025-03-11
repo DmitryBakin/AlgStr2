@@ -1,20 +1,78 @@
-﻿// Laba №1.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
+#include <vector>
+#include <fstream>
+#include <string>
 
-#include <iostream>
-
-int main()
+bool isFileContainsSortedArray(const std::string& fileName)
 {
-    std::cout << "Hello World!\n";
+	int valueNow = 0, valuePrev = -100000000;
+	std::string ch;
+	std::ifstream file;
+	file.open(fileName);
+	while (!file.eof())
+	{
+		ch = "";
+		file >> ch;
+		if (ch != "")
+		{
+			valueNow = stoi(ch);
+			if (valueNow < valuePrev)
+				return false;
+			valuePrev = valueNow;
+		}
+	}
+	return true;
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+
+void split(std::string& filename, std::string& fileSplit1, std::string& fileSplit2)
+{
+	std::ifstream file(filename);
+	std::ofstream file_1(fileSplit1);
+	std::ofstream file_2(fileSplit2);
+
+	int value;
+	file >> value;
+
+	while ((!file.eof()))
+	{
+		//std::cout << value;
+		file_1 << value << " ";
+		file >> value;
+		///std::cout << value;
+		file_2 << value << " ";
+		file >> value;
+	}
+	file.close();
+	file_1.close();
+	file_2.close();
+}
+
+
+void fileSort(std::string& filename)
+{
+	std::string file_0 = "file_0";
+	std::string file_1 = "file_1";
+	std::string file_2 = "file_2";
+	std::string file_3 = "file_3";
+
+	split(filename, file_0, file_1);
+
+	
+}
+void main()
+{
+	for (int border = 10; border <= 10; border *= 100)
+		for (int size = 10000; size <= 10000; size *= 10)
+		{
+			std::string filename = "random_mas_" + std::to_string(size) + "_" + std::to_string(border) + ".txt";
+			
+			fileSort(filename);
+
+			if (isFileContainsSortedArray("random_mas_" + std::to_string(size) + "_" + std::to_string(border) + ".txt"))
+				std::cout << "OK";
+			else
+				std::cout << "GG\n";
+		}
+}
