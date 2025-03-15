@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-#include <vector>
 #include <fstream>
 #include <string>
 
@@ -24,7 +23,18 @@ bool isFileContainsSortedArray(const std::string& fileName)
 	return true;
 }
 
-
+bool isEndCycle(std::string& fileBI)
+{
+	std::ifstream fileB(fileBI);
+	int ch;
+	if (!(fileB >> ch))
+	{
+		fileB.close();
+		return false;
+	}
+	fileB.close();
+	return true;
+}
 
 void split(std::string& filename, std::string& fileSplit1, std::string& fileSplit2)
 {
@@ -49,10 +59,18 @@ void split(std::string& filename, std::string& fileSplit1, std::string& fileSpli
 	file_2.close();
 }
 
-void fileMerges(const int p, std::ifstream *inputFile, std::ofstream* outputFile)
+void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, std::string& outputFile1, std::string& outputFile2)
 {
 
-	int* mas = new int[2];
+	std::ifstream inputFile[2];
+	std::ofstream outputFile[2];
+
+	inputFile[0].open(inputFile1);
+	inputFile[1].open(inputFile2);
+	outputFile[0].open(outputFile1);
+	outputFile[1].open(outputFile2);
+
+	int mas[2];
 
 	inputFile[0] >> mas[0];
 	inputFile[1] >> mas[1];
@@ -99,9 +117,13 @@ void fileMerges(const int p, std::ifstream *inputFile, std::ofstream* outputFile
 		outputFile[n] << mas[1] << " ";
 		inputFile[1] >> mas[1];
 	}
-	delete[]mas;
-}
 
+	inputFile[0].close();
+	inputFile[1].close();
+	outputFile[0].close();
+	outputFile[1].close();
+
+}
 
 void fileSort(std::string& filename)
 {
@@ -110,59 +132,34 @@ void fileSort(std::string& filename)
 	std::string file_2 = "file_2";
 	std::string file_3 = "file_3";
 	
-
-
 	split(filename, file_0, file_1);
+	
 	int p = 1;
 
-	while(file_1.eof())
+	while(isEndCycle(file_1))
 	{
-		std::ifstream inputFile[2];
-		std::ofstream outputFile[2];
-
-		inputFile[0].open(file_0);
-		inputFile[1].open(file_1);
-		outputFile[0].open(file_2);
-		outputFile[1].open(file_3);
-
-		fileMerges(p, inputFile, outputFile);
-
-		inputFile[0].close();
-		inputFile[1].close();
-		outputFile[0].close();
-		outputFile[1].close();
+		fileMerges(p, file_0, file_1, file_2, file_3);
 
 		p *= 2;
 
-		inputFile[0].open(file_2);
-		inputFile[1].open(file_3);
-		outputFile[0].open(file_0);
-		outputFile[1].open(file_1);
+		fileMerges(p, file_2, file_3, file_0, file_1);
 
-		fileMerges(p, inputFile, outputFile);
-
-		inputFile[0].close();
-		inputFile[1].close();
-		outputFile[0].close();
-		outputFile[1].close();
-		
 		p *= 2;
-
-		file.open(file_3);
 	} 
-	
+
 }
+
 void main()
 {
 	for (int border = 10; border <= 10; border *= 100)
-		for (int size = 10000; size <= 10000; size *= 10)
+		for (int size = 100000; size <= 100000; size *= 10)
 		{
 			std::string filename = "random_mas_" + std::to_string(size) + "_" + std::to_string(border) + ".txt";
-			
+
 			fileSort(filename);
 
 			if (isFileContainsSortedArray("file_0"))
-				std::cout << "OK";
+				std::cout << "OK\n";
 			else
 				std::cout << "GG\n";
 		}
