@@ -2,38 +2,33 @@
 #include <fstream>
 #include <string>
 
-bool isFileContainsSortedArray(const std::string& fileName)
+bool isFileContainsSortedArray(const std::string& fileName, const int min)
 {
-	int valueNow = 0, valuePrev = -100000000;
-	std::string ch;
+	int valueNow = 0, valuePrev = min;
 	std::ifstream file;
 	file.open(fileName);
-	while (!file.eof())
+	while (file >> valueNow)
 	{
-		ch = "";
-		file >> ch;
-		if (ch != "")
+		if (valueNow < valuePrev)
 		{
-			valueNow = stoi(ch);
-			if (valueNow < valuePrev)
-				return false;
-			valuePrev = valueNow;
+			return false;
 		}
+		valuePrev = valueNow;
 	}
 	return true;
 }
 
-bool isEndCycle(std::string& fileBI)
+bool isEndFile(std::string& fileBI)
 {
 	std::ifstream fileB(fileBI);
 	int ch;
 	if (!(fileB >> ch))
 	{
 		fileB.close();
-		return false;
+		return true;
 	}
 	fileB.close();
-	return true;
+	return false;
 }
 
 void splitting(std::string& filename, std::string& fileSplit1, std::string& fileSplit2)
@@ -45,10 +40,10 @@ void splitting(std::string& filename, std::string& fileSplit1, std::string& file
 
 	int n = 0, x, i;
 	file >> x;
-	while (!file.eof())
+	while (file.good())
 	{
 		i = 0;
-		while (!file.eof() && i < 1)
+		while (file.good() && i < 1)
 		{
 			fileSplit[n] << x << " ";
 			file >> x;
@@ -61,7 +56,7 @@ void splitting(std::string& filename, std::string& fileSplit1, std::string& file
 	fileSplit[1].close();
 }
 
-void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, std::string& outputFile1, std::string& outputFile2)
+bool fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, std::string& outputFile1, std::string& outputFile2)
 {
 
 	std::ifstream inputFile[2];
@@ -77,53 +72,46 @@ void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, s
 	inputFile[0] >> mas[0];
 	inputFile[1] >> mas[1];
 	int n = 0;
-	while (!inputFile[0].eof() && !inputFile[1].eof())
+	while (inputFile[0].good() || inputFile[1].good())
 	{
 		int i = 0, j = 0;
-		while (!inputFile[0].eof() && !inputFile[1].eof() && i < p && j < p)
+		bool firstEnded = !(inputFile[0].good() && i < p);
+		bool secondEnded = !(inputFile[1].good() && j < p);
+		while (!firstEnded || !secondEnded)
 		{
-			if (mas[0] < mas[1])
+			if (!firstEnded && (secondEnded || mas[0] < mas[1]))
 			{
 				outputFile[n] << mas[0] << " ";
 				inputFile[0] >> mas[0];
 				i++;
+				firstEnded = !(inputFile[0].good() && i < p);
 			}
-			else
+			else if (!secondEnded)
 			{
 				outputFile[n] << mas[1] << " ";
 				inputFile[1] >> mas[1];
 				j++;
+				secondEnded = !(inputFile[1].good() && j < p);
 			}
-		}
-		while (!inputFile[0].eof() && i < p)
-		{
-			outputFile[n] << mas[0] << " ";
-			inputFile[0] >> mas[0];
-			i++;
-		}
-		while (!inputFile[1].eof() && j < p)
-		{
-			outputFile[n] << mas[1] << " ";
-			inputFile[1] >> mas[1];
-			j++;
+			bool foo = false;
 		}
 		n = 1 - n;
 	}
-	while (!inputFile[0].eof())
+
+	if (!isEndFile(outputFile2))
 	{
-		outputFile[n] << mas[0] << " ";
-		inputFile[0] >> mas[0];
-	}
-	while (!inputFile[1].eof())
-	{
-		outputFile[n] << mas[1] << " ";
-		inputFile[1] >> mas[1];
+		inputFile[0].close();
+		inputFile[1].close();
+		outputFile[0].close();
+		outputFile[1].close();
+		return true;
 	}
 
 	inputFile[0].close();
 	inputFile[1].close();
 	outputFile[0].close();
 	outputFile[1].close();
+	return false;
 
 }
 
@@ -138,14 +126,10 @@ void fileSort(std::string& filename)
 	
 	int p = 1;
 
-	while(isEndCycle(file_1))
+	while(fileMerges(p, file_0, file_1, file_2, file_3))
 	{
-		fileMerges(p, file_0, file_1, file_2, file_3);
-
-		p *= 2;
-
-		fileMerges(p, file_2, file_3, file_0, file_1);
-
+		std::swap(file_0, file_2);
+		std::swap(file_1, file_3);
 		p *= 2;
 	} 
 
@@ -160,7 +144,7 @@ void main()
 
 			fileSort(filename);
 
-			if (isFileContainsSortedArray("file_0"))
+			if (isFileContainsSortedArray("file_0", -border) || isFileContainsSortedArray("file_2", -border))
 				std::cout << "File sorted\n";
 			else
 				std::cout << "File is not sorting\n";
