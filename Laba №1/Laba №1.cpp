@@ -36,27 +36,29 @@ bool isEndCycle(std::string& fileBI)
 	return true;
 }
 
-void split(std::string& filename, std::string& fileSplit1, std::string& fileSplit2)
+void splitting(std::string& filename, std::string& fileSplit1, std::string& fileSplit2)
 {
+	std::ofstream fileSplit[2];
+	fileSplit[0].open(fileSplit1);
+	fileSplit[1].open(fileSplit2);
 	std::ifstream file(filename);
-	std::ofstream file_1(fileSplit1);
-	std::ofstream file_2(fileSplit2);
 
-	int value;
-	file >> value;
-
-	while ((!file.eof()))
+	int n = 0, x, i;
+	file >> x;
+	while (!file.eof())
 	{
-		//std::cout << value;
-		file_1 << value << " ";
-		file >> value;
-		///std::cout << value;
-		file_2 << value << " ";
-		file >> value;
+		i = 0;
+		while (!file.eof() && i < 1)
+		{
+			fileSplit[n] << x << " ";
+			file >> x;
+			i++;
+		}
+		n = 1 - n;
 	}
 	file.close();
-	file_1.close();
-	file_2.close();
+	fileSplit[0].close();
+	fileSplit[1].close();
 }
 
 void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, std::string& outputFile1, std::string& outputFile2)
@@ -132,7 +134,7 @@ void fileSort(std::string& filename)
 	std::string file_2 = "file_2";
 	std::string file_3 = "file_3";
 	
-	split(filename, file_0, file_1);
+	splitting(filename, file_0, file_1);
 	
 	int p = 1;
 
@@ -152,15 +154,15 @@ void fileSort(std::string& filename)
 void main()
 {
 	for (int border = 10; border <= 10; border *= 100)
-		for (int size = 100000; size <= 100000; size *= 10)
+		for (int size = 10000; size <= 10000; size *= 10)
 		{
 			std::string filename = "random_mas_" + std::to_string(size) + "_" + std::to_string(border) + ".txt";
 
 			fileSort(filename);
 
 			if (isFileContainsSortedArray("file_0"))
-				std::cout << "OK\n";
+				std::cout << "File sorted\n";
 			else
-				std::cout << "GG\n";
+				std::cout << "File is not sorting\n";
 		}
 }
