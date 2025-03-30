@@ -4,39 +4,36 @@
 
 bool isFileContainsSortedArray(const std::string& fileName)
 {
-	int valueNow = 0, valuePrev = -100000000;
-	std::string ch;
+	int valueNow = 0, valuePrev = 0;
 	std::ifstream file;
 	file.open(fileName);
-	while (!file.eof())
+
+	file >> valuePrev;
+	while (file >> valueNow)
 	{
-		ch = "";
-		file >> ch;
-		if (ch != "")
+		if (valueNow < valuePrev)
 		{
-			valueNow = stoi(ch);
-			if (valueNow < valuePrev)
-				return false;
-			valuePrev = valueNow;
+			return false;
 		}
+		valuePrev = valueNow;
 	}
 	return true;
 }
 
-bool isEndCycle(std::string& fileBI)
+bool isEndFile(const std::string& fileBI)
 {
 	std::ifstream fileB(fileBI);
 	int ch;
 	if (!(fileB >> ch))
 	{
 		fileB.close();
-		return false;
+		return true;
 	}
 	fileB.close();
-	return true;
+	return false;
 }
 
-void splitting(std::string& filename, std::string& fileSplit1, std::string& fileSplit2)
+void splitting(const std::string& filename, const std::string& fileSplit1, const std::string& fileSplit2)
 {
 	std::ofstream fileSplit[2];
 	fileSplit[0].open(fileSplit1);
@@ -45,10 +42,10 @@ void splitting(std::string& filename, std::string& fileSplit1, std::string& file
 
 	int n = 0, x, i;
 	file >> x;
-	while (!file.eof())
+	while (file.good())
 	{
 		i = 0;
-		while (!file.eof() && i < 1)
+		while (file.good() && i < 1)
 		{
 			fileSplit[n] << x << " ";
 			file >> x;
@@ -61,7 +58,7 @@ void splitting(std::string& filename, std::string& fileSplit1, std::string& file
 	fileSplit[1].close();
 }
 
-void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, std::string& outputFile1, std::string& outputFile2)
+void fileMerges(const int p, const std::string& inputFile1, const std::string& inputFile2, const std::string& outputFile1, const std::string& outputFile2)
 {
 
 	std::ifstream inputFile[2];
@@ -77,10 +74,10 @@ void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, s
 	inputFile[0] >> mas[0];
 	inputFile[1] >> mas[1];
 	int n = 0;
-	while (!inputFile[0].eof() && !inputFile[1].eof())
+	while (inputFile[0].good() && inputFile[1].good())
 	{
 		int i = 0, j = 0;
-		while (!inputFile[0].eof() && !inputFile[1].eof() && i < p && j < p)
+		while (inputFile[0].good() && inputFile[1].good() && i < p && j < p)
 		{
 			if (mas[0] < mas[1])
 			{
@@ -95,13 +92,13 @@ void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, s
 				j++;
 			}
 		}
-		while (!inputFile[0].eof() && i < p)
+		while (inputFile[0].good() && i < p)
 		{
 			outputFile[n] << mas[0] << " ";
 			inputFile[0] >> mas[0];
 			i++;
 		}
-		while (!inputFile[1].eof() && j < p)
+		while (inputFile[1].good() && j < p)
 		{
 			outputFile[n] << mas[1] << " ";
 			inputFile[1] >> mas[1];
@@ -109,12 +106,12 @@ void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, s
 		}
 		n = 1 - n;
 	}
-	while (!inputFile[0].eof())
+	while (inputFile[0].good())
 	{
 		outputFile[n] << mas[0] << " ";
 		inputFile[0] >> mas[0];
 	}
-	while (!inputFile[1].eof())
+	while (inputFile[1].good())
 	{
 		outputFile[n] << mas[1] << " ";
 		inputFile[1] >> mas[1];
@@ -124,21 +121,20 @@ void fileMerges(const int p, std::string& inputFile1, std::string& inputFile2, s
 	inputFile[1].close();
 	outputFile[0].close();
 	outputFile[1].close();
-
 }
 
-void fileSort(std::string& filename)
+bool fileSort(const std::string& filename)
 {
-	std::string file_0 = "file_0";
-	std::string file_1 = "file_1";
-	std::string file_2 = "file_2";
-	std::string file_3 = "file_3";
+	const std::string file_0 = "file_0";
+	const std::string file_1 = "file_1";
+	const std::string file_2 = "file_2";
+	const std::string file_3 = "file_3";
 	
 	splitting(filename, file_0, file_1);
 	
 	int p = 1;
 
-	while(isEndCycle(file_1))
+	while(!isEndFile(file_1))
 	{
 		fileMerges(p, file_0, file_1, file_2, file_3);
 
@@ -149,6 +145,10 @@ void fileSort(std::string& filename)
 		p *= 2;
 	} 
 
+	if (isFileContainsSortedArray(file_0))
+		return true;
+	return false;
+
 }
 
 void main()
@@ -158,9 +158,7 @@ void main()
 		{
 			std::string filename = "random_mas_" + std::to_string(size) + "_" + std::to_string(border) + ".txt";
 
-			fileSort(filename);
-
-			if (isFileContainsSortedArray("file_0"))
+			if (fileSort(filename))
 				std::cout << "File sorted\n";
 			else
 				std::cout << "File is not sorting\n";
