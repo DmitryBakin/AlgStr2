@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iostream"
+#include <vector>
 
 class BinaryTree 
 {
@@ -27,15 +28,72 @@ public:
 	};
 
 	BinaryTree() = default;
+	BinaryTree(Node* root);
+	//BinaryTree(const BinaryTree& other);
+	//BinaryTree(BinaryTree&& other);
 	~BinaryTree();
 
-	void print(Node* root, int leftBorderPos, int rightBorderPos, int yPos) const;
-	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
+	Node* root() const;
+
+	void clear(Node* root);
+	void removeSubtrees(Node* root);
+
+	bool isEmpty() const;
+
+	//int height(Node* root) const;
+
+	int countOfRoots() const;
+
+	int maxKey() const;
+	int minKey() const;
+
+	Node* addNode(Node* root, int key);
+	bool searchNode(int key);
+
+	void lrnPrint(Node* root) const;
+
+	std::vector<int> getVectorKeys(Node* root, std::vector<int> &key) const;
+
+	void printTree(int leftBorderPos, int rightBorderPos) const;
+	void printTreeHorizontal(int marginLeft, int levelSpacing) const;
+
+
 
 private:
 	Node* m_root = nullptr;
+
+private:
+	void m_print(Node* root, int leftBorderPos, int rightBorderPos, int yPos) const;
+	void m_printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
+
 };
 
 
 
+/*
+* Необходимые методы класса Node (на оценку "удовлетворительно" данный класс можно реализовать в виде структуры с отрытым доступом член-данных):
+- конструкторы (по умолчанию и с параметрами); +
+- получение/изменение ключа узла (целое число); +
+- получение/изменение потомков узла; +
 
+Необходимые методы класса BinaryTree:
+- конструкторы (по умолчаниюM +, копирования, перемещения);
+- деструктор; +
+- получение корня дерева; +
+- очистка дерева (удаление всех узлов); +
+- удаление поддеревьев узла; +
+- isEmpty (возвращает true, если дерево пусто); +
+- получение высоты дерева;
+- получение количества узлов дерева; +
+- получение минимального/максимального ключа дерева; +
+- добавление узла в дерево (методом случайного выбора поддерева); +
+- удаление узла из дерева по ключу (возвращает true, если узел был удалён);
+- поиск узла дерева по ключу; +
+- проверка дерева на сбалансированность (возвращает true, если дерево является сбалансированным: высоты правого и левого поддеревьев отличаются не более, чем на единицу, и сами поддеревья также являются сбалансированными);
+- получение уровня вершины по ключу (возвращает индекс уровня или -1, если вершина не найдена);
+- получение вектора (std::vector<int>), содержащего все ключи дерева по возрастанию (обход вершин производить любым способом); +
+- вывод в консоль дерева в горизонтальном виде (самый правый потомок находится на первой строке, самый левый - на нижней); +
+- вывод в консоль дерева по уровням в консоль;
+- оператор присваивания;
+- оператор перемещения.
+*/
