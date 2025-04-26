@@ -26,6 +26,7 @@ BinaryTree::Node* BinaryTree::Node::leftChild() const
 
 BinaryTree::Node* BinaryTree::Node::rightChild() const
 {
+
 	return m_rightChild;
 }
 
@@ -54,46 +55,17 @@ BinaryTree::Node* BinaryTree::root() const
 	return m_root;
 }
 
-void BinaryTree::clear(Node* removeRoot)
+void BinaryTree::clear()
 {
-	if (isEmpty())
-	{
-		return;
-	}
-
-	if (removeRoot->leftChild())
-		clear(removeRoot->leftChild());
-
-	if (removeRoot->rightChild())
-		clear(removeRoot->rightChild());
-
-	removeRoot->setLeftChild(nullptr);
-	removeRoot->setRightChild(nullptr);
-
-	delete removeRoot;
-
+	clear(m_root);
 	m_root = nullptr;
 }
 
-void BinaryTree::removeSubtrees(Node* root)
+void BinaryTree::removeSubtrees()
 {
-	if (isEmpty())
-	{
-		return;
-	}
-
-	if (root->leftChild())
-		removeSubtrees(root->leftChild());
-
-	if (root->rightChild())
-		removeSubtrees(root->rightChild());
-
-	root->setLeftChild(nullptr);
-	root->setRightChild(nullptr);
-
-	root = nullptr;
-
-	delete root;
+	removeSubtrees(m_root);
+	m_root->setLeftChild(nullptr);
+	m_root->setRightChild(nullptr);
 }
 
 bool BinaryTree::isEmpty() const
@@ -101,13 +73,22 @@ bool BinaryTree::isEmpty() const
 	return (m_root == nullptr);
 }
 
-/*int BinaryTree::height(Node* root, int height) const
+int BinaryTree::height(Node* root) const
 {
-	if (isEmpty())
+	if (root == nullptr)
 		return 0;
-	std::vector<int> heights;
+	int heightTree = 1;
 
-}*/
+	int left = height(root->leftChild());
+	int right = height(root->rightChild());
+
+	return 1 + std::max(left, right);
+}
+
+int BinaryTree::heightNode(Node* root, Node* node) const
+{
+	return 0;
+}
 
 int BinaryTree::countOfRoots() const
 {
@@ -153,46 +134,228 @@ int BinaryTree::minKey() const
 	return 0;
 }
 
-BinaryTree::Node* BinaryTree::addNode(Node* root, int key)
+BinaryTree::Node* BinaryTree::addKey(int key)
 {
-	if (!root) {
-		root = new Node(key);
-	}
-	else if (rand() % 2) {
-		root->setLeftChild(addNode(root->leftChild(), key));
-	}
-	else {
-		root->setRightChild(addNode(root->rightChild(), key));
-	}
-	return root;
+	return addKey(m_root, key);
 }
 
-bool BinaryTree::searchNode(int key)
+BinaryTree::Node* BinaryTree::nlrSearch(int key) const
+{
+	return nlrSearch(m_root, key);
+}
+
+bool BinaryTree::removeKey(int key)
+{
+	return removeKey(m_root, key);
+}
+
+bool BinaryTree::contains(int key) const
+{
+	return contains(m_root, key);
+}
+
+std::vector<int> BinaryTree::getVectorKeys() const
 {
 	std::vector<int> keys;
 	getVectorKeys(m_root, keys);
+	return keys;
+}
+
+void BinaryTree::bfsPrint(Node* root) const
+{
+	if (root == nullptr)
+		return;
+	std::list<Node*> unprocessedNodes(1, root);
+	while (!unprocessedNodes.empty()) {
+		Node* node = unprocessedNodes.front();
+		std::cout << node->key() << ' ';
+		if (node->leftChild()) {
+			unprocessedNodes.push_back(node->leftChild());
+		}
+		if (node->rightChild()) {
+			unprocessedNodes.push_back(node->rightChild());
+		}
+		unprocessedNodes.pop_front();
+		
+	}
+}
+
+void BinaryTree::printTreeHorizontal(int marginLeft, int levelSpacing) const
+{
+	printHorizontal(m_root, marginLeft, levelSpacing);
+}
+
+bool BinaryTree::contains(Node* root, int key) const
+{
+	std::vector<int> keys;
+	getVectorKeys(root, keys);
 	for (int i = 0; i < keys.size(); i++)
 	{
-		if(keys[i] == key)
+		if (keys[i] == key)
 			return true;
 	}
 	return false;
 }
 
-void BinaryTree::lrnPrint(Node* root) const
+bool BinaryTree::removeKey(Node* root, int key)
 {
-	if (root == nullptr) 
+	Node* node = nlrSearch(key);
+	Node* nodeParent, *replacementNode;
+
+	if (node == nullptr)
+		return false;
+
+	if (node->leftChild() == nullptr && node->rightChild() == nullptr)
+	{
+		replacementNode = nullptr;
+		nodeParent = searchParent(root, node);
+		if(nodeParent->leftChild() == node)
+			nodeParent->setLeftChild(nullptr);
+		else
+			nodeParent->setRightChild(nullptr);
+
+		delete node;
+	}
+	else if (node->leftChild() != nullptr && node->rightChild() == nullptr)
+	{
+		replacementNode = node->leftChild();
+		nodeParent = searchParent(root, node);
+		nodeParent->setLeftChild(nullptr);
+		delete node;
+		nodeParent->setLeftChild(replacementNode);
+	}
+	else if (node->leftChild() == nullptr && node->rightChild() != nullptr)
+	{
+		replacementNode = node->rightChild();
+		nodeParent = searchParent(root, node);
+		nodeParent->setRightChild(nullptr);
+		delete node;
+		nodeParent->setRightChild(replacementNode);
+	}
+	else if (node == root)
+	{
+		replacementNode = node;
+
+		while (replacementNode->rightChild() != nullptr)
+		{
+			replacementNode = replacementNode->rightChild();
+		}
+
+		replacementNode->setLeftChild(node->leftChild());
+		replacementNode->setRightChild(node->rightChild());
+
+		searchParent(root, replacementNode)->setRightChild(nullptr);
+
+		m_root = replacementNode;
+
+		delete node;
+	}
+
+	else
+	{
+		replacementNode = node;
+
+		while (replacementNode->rightChild() != nullptr)
+		{
+			replacementNode = replacementNode->rightChild();
+		}
+
+		nodeParent = searchParent(root, node);
+		
+		searchParent(root, replacementNode)->setRightChild(nullptr);
+
+		nodeParent->setRightChild(replacementNode);
+
+		replacementNode->setLeftChild(node->leftChild());
+		replacementNode->setRightChild(node->rightChild());
+		delete node;
+		nodeParent->setRightChild(replacementNode);
+
+	}
+	return true;
+}
+
+BinaryTree::Node* BinaryTree::searchParent(Node* root, Node* node) const
+{
+	if (root == nullptr)
+		return nullptr;
+	if ((root != nullptr) && (root->rightChild() == node || root->leftChild() == node))
+		return root;
+	Node* subTreeSearchParentResult = searchParent(root->leftChild(), node);
+	if (!subTreeSearchParentResult)
+	{
+		subTreeSearchParentResult = searchParent(root->rightChild(), node);
+	}
+	return subTreeSearchParentResult;
+}
+
+BinaryTree::Node* BinaryTree::addKey(Node* root, int key)
+{
+	if (!root) {
+		root = new Node(key);
+	}
+	else if (rand() % 2) {
+		root->setLeftChild(addKey(root->leftChild(), key));
+	}
+	else {
+		root->setRightChild(addKey(root->rightChild(), key));
+	}
+	return root;
+}
+
+BinaryTree::Node* BinaryTree::nlrSearch(Node* root, int key) const
+{
+	if (!root || root->key() == key) {
+		return root;
+	}
+	Node* subTreeSearchResult = nlrSearch(root->leftChild(), key);
+	if (!subTreeSearchResult) {
+		subTreeSearchResult = nlrSearch(root->rightChild(), key);
+	}
+	return subTreeSearchResult;
+}
+
+void BinaryTree::clear(Node* node)
+{
+	if (node == nullptr)
+		return;
+
+	clear(node->leftChild());
+	clear(node->rightChild());
+
+	delete node;
+	node = nullptr;
+}
+
+void BinaryTree::removeSubtrees(Node* node)
+{
+	if (node == nullptr)
+		return;
+
+	removeSubtrees(node->leftChild());
+	removeSubtrees(node->rightChild());
+
+	node = nullptr;
+	delete node;
+}
+
+void BinaryTree::printHorizontal(Node* root, int marginLeft, int levelSpacing) const
+{
+	if (root == nullptr)
 	{
 		return;
 	}
-	lrnPrint(root->leftChild());
-	lrnPrint(root->rightChild());
-	std::cout << root->key() << ' ';
+	printHorizontal(root->rightChild(), marginLeft + levelSpacing, levelSpacing);
+	std::cout << std::string(marginLeft,
+		' ') << root->key() << std::endl;
+	printHorizontal(root->leftChild(), marginLeft + levelSpacing, levelSpacing);
 }
 
-std::vector<int> BinaryTree::getVectorKeys(Node* root, std::vector<int> &keys) const
+
+std::vector<int> BinaryTree::getVectorKeys(Node* root, std::vector<int>& keys) const
 {
-	if(root->leftChild())
+
+	if (root->leftChild())
 		getVectorKeys(root->leftChild(), keys);
 
 	if (root->rightChild())
@@ -200,40 +363,9 @@ std::vector<int> BinaryTree::getVectorKeys(Node* root, std::vector<int> &keys) c
 
 	keys.push_back(root->key());
 
+	std::sort(keys.begin(), keys.end());
 
 	return keys;
-}
-
-void BinaryTree::printTree(int leftBorderPos, int rightBorderPos) const
-{
-	m_print(m_root, leftBorderPos, rightBorderPos, 0);
-}
-
-void BinaryTree::printTreeHorizontal(int marginLeft, int levelSpacing) const
-{
-	m_printHorizontal(m_root, marginLeft, levelSpacing);
-}
-
-void BinaryTree::m_print(Node* root, int leftBorderPos, int rightBorderPos, int yPos) const
-{
-	if (root == nullptr) {
-		return;
-	}
-	int xPos = (leftBorderPos + rightBorderPos) / 2;
-	std::cout << std::string(xPos, ' ') << root->key() << std::endl;
-	m_print(root->leftChild(), leftBorderPos, xPos, yPos + 15);
-	m_print(root->rightChild(), xPos, rightBorderPos, yPos );
-}
-
-void BinaryTree::m_printHorizontal(Node* root, int marginLeft, int levelSpacing) const
-{
-	if (root == nullptr) {
-		return;
-	}
-	m_printHorizontal(root->rightChild(), marginLeft + levelSpacing, levelSpacing);
-	std::cout << std::string(marginLeft,
-		' ') << root->key() << std::endl;
-	m_printHorizontal(root->leftChild(), marginLeft + levelSpacing, levelSpacing);
 }
 
 

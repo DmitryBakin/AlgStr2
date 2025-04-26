@@ -6,44 +6,105 @@ void main()
 {
 	
 	BinaryTree::Node* root3 = new BinaryTree::Node(-21, nullptr, nullptr);
-	BinaryTree::Node* root2 = new BinaryTree::Node(43342, nullptr, root3);
-	BinaryTree::Node* root = new BinaryTree::Node(23, nullptr, root2);
+	BinaryTree::Node* root2 = new BinaryTree::Node(43342, nullptr, nullptr);
+	BinaryTree::Node* root = new BinaryTree::Node(23, root3, root2);
 	BinaryTree::Node* right = new BinaryTree::Node(1, nullptr, nullptr);
 	BinaryTree::Node* left = new BinaryTree::Node(45, right, root);
+	BinaryTree::Node* now = new BinaryTree::Node(0, nullptr, nullptr);
 
 	BinaryTree BT(left);
+	//BinaryTree BT1(now);
 
-	//std::vector<int> keys, ki;
+	std::vector<int> keys;
 
-	bool min = BT.searchNode(123213);
+	//bool min = BT.searchNode(123213);
 
-	BT.printTree(0, 100);
-	//BT.clear(BT.root());
-	// ki = BT.getVectorKeys(BT.root(), keys);
-	BT.printTree(0, 100);
-	/*BT.printTree(0, 25);
-	std::cout << BT.isEmpty() << std::endl;
-	BT.clear(BT.root());
+	BT.printTreeHorizontal(0, 10);
+
+	//BT.addKey(32);
+	BT.removeKey(45);
+	//keys = BT.getVectorKeys();
+
+	BT.printTreeHorizontal(0, 10);
+
+	//BT.bfsPrint(BT.root());
 	
-	BT.printTree(25, 80);
-	std::cout << BT.isEmpty();
-	
-	std::vector<int> key;
+	//BT.printTreeHorizontal(0, 10);
 
-	BT.addNode(root2, 451);
-	BT.printTree(25, 80);
-	
-	BT.lrnPrint(left);
+	//for (int i = 0; i < keys.size(); i++)
+		//std::cout << keys[i] << " ";
 
-	puts("");
-
-	key = BT.getVectorKeys(BT.root(), key);
-
-	
-	for (int i = 0; i < ki.size(); i++)
-	{
-		std::cout << ki[i] << " ";
-	}*/
-
-	std::cout << min << " ";
+	//std::cout << "\n" << BT.nlrSearch(-21) << "\n";
+	std::cout << BT.height(BT.root());
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*BT.printTree(0, 25);
+std::cout << BT.isEmpty() << std::endl;
+BT.clear(BT.root());
+
+BT.printTree(25, 80);
+std::cout << BT.isEmpty();
+
+std::vector<int> key;
+
+BT.addNode(root2, 451);
+BT.printTree(25, 80);
+
+BT.lrnPrint(left);
+
+puts("");
+
+key = BT.getVectorKeys(BT.root(), key);
+
+
+for (int i = 0; i < ki.size(); i++)
+{
+	std::cout << ki[i] << " ";
+}*/

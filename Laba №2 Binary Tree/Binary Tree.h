@@ -2,6 +2,8 @@
 
 #include "iostream"
 #include <vector>
+#include <list>
+#include <algorithm>
 
 class BinaryTree 
 {
@@ -35,36 +37,54 @@ public:
 
 	Node* root() const;
 
-	void clear(Node* root);
-	void removeSubtrees(Node* root);
+	void clear();
+	void removeSubtrees();
+
 
 	bool isEmpty() const;
 
-	//int height(Node* root) const;
+	int height(Node* root) const;
+	int heightNode(Node* root, Node* node) const;
 
 	int countOfRoots() const;
 
 	int maxKey() const;
 	int minKey() const;
 
-	Node* addNode(Node* root, int key);
-	bool searchNode(int key);
+	Node* addKey(int key);
+	Node* nlrSearch(int key) const;
 
-	void lrnPrint(Node* root) const;
+	bool removeKey(int key);
 
-	std::vector<int> getVectorKeys(Node* root, std::vector<int> &key) const;
+	
+	bool contains(int key) const;
 
-	void printTree(int leftBorderPos, int rightBorderPos) const;
+	std::vector<int> getVectorKeys() const;
+
+	void bfsPrint(Node* root) const;
+
 	void printTreeHorizontal(int marginLeft, int levelSpacing) const;
-
 
 
 private:
 	Node* m_root = nullptr;
 
 private:
-	void m_print(Node* root, int leftBorderPos, int rightBorderPos, int yPos) const;
-	void m_printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
+
+	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
+	bool contains(Node* root, int key) const;
+
+	bool removeKey(Node* root, int key);
+	Node* searchParent(Node* root, Node* node) const;
+
+	Node* addKey(Node* root, int key);
+	Node* nlrSearch(Node* root, int key) const;
+
+	void clear(Node* node);
+	void removeSubtrees(Node* node);
+
+
+	std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const;
 
 };
 
@@ -77,7 +97,7 @@ private:
 - получение/изменение потомков узла; +
 
 Ќеобходимые методы класса BinaryTree:
-- конструкторы (по умолчаниюM +, копировани€, перемещени€);
+- конструкторы (по умолчанию +, копировани€, перемещени€);
 - деструктор; +
 - получение корн€ дерева; +
 - очистка дерева (удаление всех узлов); +
@@ -87,7 +107,7 @@ private:
 - получение количества узлов дерева; +
 - получение минимального/максимального ключа дерева; +
 - добавление узла в дерево (методом случайного выбора поддерева); +
-- удаление узла из дерева по ключу (возвращает true, если узел был удалЄн);
+- удаление узла из дерева по ключу (возвращает true, если узел был удалЄн); +
 - поиск узла дерева по ключу; +
 - проверка дерева на сбалансированность (возвращает true, если дерево €вл€етс€ сбалансированным: высоты правого и левого поддеревьев отличаютс€ не более, чем на единицу, и сами поддеревь€ также €вл€ютс€ сбалансированными);
 - получение уровн€ вершины по ключу (возвращает индекс уровн€ или -1, если вершина не найдена);
