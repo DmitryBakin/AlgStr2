@@ -37,8 +37,9 @@ void main()
 		//std::cout << keys[i] << " ";
 
 	//std::cout << "\n" << BT.nlrSearch(-21) << "\n";
-	std::cout << BT.heightNode(8232);
+	BT.removeSubtrees();
 	//std::cout << BT.heightNode(BT.root(), 1);
+	BT.printTreeHorizontal(0, 10);
 }
 
 

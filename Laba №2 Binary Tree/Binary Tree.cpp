@@ -74,6 +74,8 @@ void BinaryTree::clear()
 void BinaryTree::removeSubtrees()
 {
 	removeSubtrees(m_root);
+	m_root->setLeftChild(nullptr);
+	m_root->setRightChild(nullptr);
 }
 
 bool BinaryTree::isEmpty() const
@@ -271,7 +273,8 @@ BinaryTree::Node* BinaryTree::nlrSearch(Node* root, int key) const
 bool BinaryTree::removeKey(Node* root, int key)
 {
 	Node* node = nlrSearch(key);
-	Node* nodeParent, * replacementNode;
+	Node* nodeParent = searchParent(root, node);
+	Node* replacementNode;
 
 	if (node == nullptr)
 		return false;
@@ -279,18 +282,26 @@ bool BinaryTree::removeKey(Node* root, int key)
 	if (node->leftChild() == nullptr && node->rightChild() == nullptr)
 	{
 		replacementNode = nullptr;
-		nodeParent = searchParent(root, node);
-		if (nodeParent->leftChild() == node)
-			nodeParent->setLeftChild(nullptr);
-		else
-			nodeParent->setRightChild(nullptr);
 
-		delete node;
+		if (nodeParent != nullptr)
+		{
+			if (nodeParent->leftChild() == node)
+				nodeParent->setLeftChild(nullptr);
+			else
+				nodeParent->setRightChild(nullptr);
+			delete node;
+			node = nullptr;
+		}
+		else
+		{
+			delete node;
+			m_root = nullptr;
+		}
 	}
+
 	else if (node->leftChild() != nullptr && node->rightChild() == nullptr)
 	{
 		replacementNode = node->leftChild();
-		nodeParent = searchParent(root, node);
 		nodeParent->setLeftChild(nullptr);
 		delete node;
 		nodeParent->setLeftChild(replacementNode);
@@ -298,7 +309,6 @@ bool BinaryTree::removeKey(Node* root, int key)
 	else if (node->leftChild() == nullptr && node->rightChild() != nullptr)
 	{
 		replacementNode = node->rightChild();
-		nodeParent = searchParent(root, node);
 		nodeParent->setRightChild(nullptr);
 		delete node;
 		nodeParent->setRightChild(replacementNode);
@@ -331,8 +341,6 @@ bool BinaryTree::removeKey(Node* root, int key)
 			replacementNode = replacementNode->rightChild();
 		}
 
-		nodeParent = searchParent(root, node);
-
 		searchParent(root, replacementNode)->setRightChild(nullptr);
 
 		nodeParent->setRightChild(replacementNode);
@@ -350,7 +358,7 @@ BinaryTree::Node* BinaryTree::searchParent(Node* root, Node* node) const
 {
 	if (root == nullptr)
 		return nullptr;
-	if ((root != nullptr) && (root->rightChild() == node || root->leftChild() == node))
+	if (root->rightChild() == node || root->leftChild() == node)
 		return root;
 	Node* subTreeSearchParentResult = searchParent(root->leftChild(), node);
 	if (!subTreeSearchParentResult)

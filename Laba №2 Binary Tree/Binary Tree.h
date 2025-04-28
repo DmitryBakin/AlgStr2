@@ -56,7 +56,7 @@ public:
 	Node* nlrSearch(int key) const;
 
 	bool removeKey(int key);
-
+	
 	bool contains(int key) const;
 	std::vector<int> getVectorKeys() const;
 
