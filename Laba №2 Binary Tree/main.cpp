@@ -4,12 +4,12 @@
 
 void main()
 {
-	BinaryTree::Node* root4 = new BinaryTree::Node(-21, nullptr, nullptr);
-	BinaryTree::Node* root3 = new BinaryTree::Node(-24, nullptr, nullptr);
-	BinaryTree::Node* root2 = new BinaryTree::Node(43342, nullptr, nullptr);
-	BinaryTree::Node* root = new BinaryTree::Node(23, root3, root2);
-	BinaryTree::Node* right = new BinaryTree::Node(1, root4, nullptr);
-	BinaryTree::Node* left = new BinaryTree::Node(45, right, root);
+	BinaryTree::Node* root4 = new BinaryTree::Node(2, nullptr, nullptr);
+	BinaryTree::Node* root3 = new BinaryTree::Node(2, nullptr, nullptr);
+	BinaryTree::Node* root2 = new BinaryTree::Node(2, nullptr, nullptr);
+	BinaryTree::Node* root = new BinaryTree::Node(2, nullptr, root2);
+	BinaryTree::Node* right = new BinaryTree::Node(2, root4, root3);
+	BinaryTree::Node* left = new BinaryTree::Node(2, root, right);
 	BinaryTree::Node* now = new BinaryTree::Node(0, nullptr, nullptr);
 
 	BinaryTree BT(left);
@@ -37,7 +37,34 @@ void main()
 		//std::cout << keys[i] << " ";
 
 	//std::cout << "\n" << BT.nlrSearch(-21) << "\n";
-	BT.removeSubtrees();
+	//BT.clear();
+	/*BT.addKey(1);
+	BT.addKey(5);
+	BT.addKey(7);
+	BT.addKey(8);
+	BT.addKey(3);
+	BT.addKey(2);
+	BT.addKey(4);
+	BT.addKey(6); */
+	//puts("\n\n\n\n\n");
+	//BT.printTreeHorizontal(0, 10);
+	//puts("\n\n\n\n\n");
+	BT.removeKey(2);
+	BT.printTreeHorizontal(0, 10);
+	puts("\n\n\n\n\n");
+	BT.removeKey(2);
+	BT.printTreeHorizontal(0, 10);
+	puts("\n\n\n\n\n");
+	BT.removeKey(2);
+	BT.printTreeHorizontal(0, 10);
+	puts("\n\n\n\n\n");
+	BT.removeKey(2);
+	BT.printTreeHorizontal(0, 10);
+	puts("\n\n\n\n\n");
+	/*BT.removeKey(123);
+	BT.printTreeHorizontal(0, 10);
+	puts("\n\n\n\n\n");
+	BT.removeKey(123);*/
 	//std::cout << BT.heightNode(BT.root(), 1);
 	BT.printTreeHorizontal(0, 10);
 }

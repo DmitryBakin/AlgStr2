@@ -24,7 +24,7 @@ BinaryTree::Node* BinaryTree::Node::leftChild() const
 	return m_leftChild;
 }
 
-BinaryTree::Node* BinaryTree::Node::rightChild() const
+BinaryTree::Node* BinaryTree::Node::rightChild() const 
 {
 
 	return m_rightChild;
@@ -272,94 +272,193 @@ BinaryTree::Node* BinaryTree::nlrSearch(Node* root, int key) const
 
 bool BinaryTree::removeKey(Node* root, int key)
 {
-	Node* node = nlrSearch(key);
-	Node* nodeParent = searchParent(root, node);
-	Node* replacementNode;
+    Node* node = nlrSearch(key);
+    Node* nodeParent = searchParent(root, node);
+    Node* replacementNode;
 
-	if (node == nullptr)
-		return false;
+    if (node == nullptr)
+        return false;
 
-	if (node->leftChild() == nullptr && node->rightChild() == nullptr)
-	{
-		replacementNode = nullptr;
+    if (node->leftChild() == nullptr && node->rightChild() == nullptr)
+    {
+        replacementNode = nullptr;
 
-		if (nodeParent != nullptr)
-		{
-			if (nodeParent->leftChild() == node)
-				nodeParent->setLeftChild(nullptr);
-			else
-				nodeParent->setRightChild(nullptr);
-			delete node;
-			node = nullptr;
-		}
-		else
-		{
-			delete node;
-			m_root = nullptr;
-		}
-	}
+        if (nodeParent != nullptr)
+        {
+            if (nodeParent->leftChild() == node)
+                nodeParent->setLeftChild(nullptr);
+            else
+                nodeParent->setRightChild(nullptr);
+            delete node;
+            node = nullptr;
+        }
+        else
+        {
+            //delete node;
+            m_root = nullptr;
+        }
+        return true;
+    }
+    else if (node->leftChild() != nullptr && node->rightChild() == nullptr)
+    {
+        Node* replacementNodeParent = node;
+        replacementNode = node;
+        while (replacementNode->leftChild() != nullptr)
+        {
+            replacementNodeParent = replacementNode;
+            replacementNode = replacementNode->leftChild();
+        }
 
-	else if (node->leftChild() != nullptr && node->rightChild() == nullptr)
-	{
-		replacementNode = node->leftChild();
-		nodeParent->setLeftChild(nullptr);
-		delete node;
-		nodeParent->setLeftChild(replacementNode);
-	}
-	else if (node->leftChild() == nullptr && node->rightChild() != nullptr)
-	{
-		replacementNode = node->rightChild();
-		nodeParent->setRightChild(nullptr);
-		delete node;
-		nodeParent->setRightChild(replacementNode);
-	}
-	else if (node == root)
-	{
-		replacementNode = node;
+        if (nodeParent != nullptr)
+        {
+            if (nodeParent->leftChild() == node)
+            {
+                nodeParent->setLeftChild(nullptr);
+                replacementNodeParent->setLeftChild(replacementNode->rightChild());
+                replacementNode->setRightChild(node->rightChild());
+                delete node;
+                nodeParent->setLeftChild(replacementNode);
+            }
+            else
+            {
+                nodeParent->setRightChild(nullptr);
+                replacementNodeParent->setLeftChild(replacementNode->rightChild());
+                replacementNode->setLeftChild(node->leftChild());
+                delete node;
+                nodeParent->setRightChild(replacementNode);
+            }
+        }
+        else
+        {
+            if (node == replacementNodeParent)
+            {
+                node->setLeftChild(nullptr);
+                delete node;
+                m_root = replacementNode;
+                replacementNode->setLeftChild(replacementNode->rightChild());
+                replacementNode->setRightChild(nullptr);
+            }
+            else
+            {
+                replacementNodeParent->setLeftChild(replacementNode->rightChild());
+                replacementNode->setLeftChild(node->leftChild());
+                m_root = replacementNode;
+                delete node;
+            }
 
-		while (replacementNode->rightChild() != nullptr)
-		{
-			replacementNode = replacementNode->rightChild();
-		}
+        }
+        return true;
+    }
+    else if (node->leftChild() == nullptr && node->rightChild() != nullptr)
+    {
+        Node* replacementNodeParent = node;
+        replacementNode = node;
+        while (replacementNode->rightChild() != nullptr)
+        {
+            replacementNodeParent = replacementNode;
+            replacementNode = replacementNode->rightChild();
+        }
+        if (nodeParent != nullptr)
+        {
+            if (nodeParent->leftChild() == node)
+            {
+                nodeParent->setLeftChild(nullptr);
+                replacementNodeParent->setRightChild(replacementNode->leftChild());
+                replacementNode->setRightChild(node->rightChild());
+                delete node;
+                nodeParent->setLeftChild(replacementNode);
+            }
+            else
+            {
+                nodeParent->setRightChild(nullptr);
+                replacementNodeParent->setRightChild(replacementNode->leftChild());
+                replacementNode->setRightChild(node->rightChild());
+                delete node;
+                nodeParent->setRightChild(replacementNode);
+            }
+        }
+        else
+        {
+            if (node == replacementNodeParent)
+            {
+                node->setRightChild(nullptr);
+                delete node;
+                m_root = replacementNode;
+                replacementNode->setRightChild(replacementNode->leftChild());
+                replacementNode->setLeftChild(nullptr);
+            }
+            else
+            {
+                replacementNodeParent->setRightChild(replacementNode->leftChild());
+                replacementNode->setRightChild(node->rightChild());
+                m_root = replacementNode;
+                delete node;
+            }
 
-		replacementNode->setLeftChild(node->leftChild());
-		replacementNode->setRightChild(node->rightChild());
+        }
+        return true;
+    }
+    else if (node == root)
+    {
+        Node* replacementNodeParent = node;
+        replacementNode = node;
 
-		searchParent(root, replacementNode)->setRightChild(nullptr);
+        while (replacementNode->rightChild() != nullptr)
+        {
+            replacementNodeParent = replacementNode;
+            replacementNode = replacementNode->rightChild();
+        }
 
-		m_root = replacementNode;
+        replacementNodeParent->setRightChild(replacementNode->leftChild());
+        replacementNode->setLeftChild(node->leftChild());
+        replacementNode->setRightChild(node->rightChild());
 
-		delete node;
-	}
+        m_root = replacementNode;
 
-	else
-	{
-		replacementNode = node;
+        delete node;
+        return true;
+    }
+    else if (node->leftChild() != nullptr && node->rightChild() != nullptr)
+    {
+        Node* replacementNodeParent = node;
+        replacementNode = node;
 
-		while (replacementNode->rightChild() != nullptr)
-		{
-			replacementNode = replacementNode->rightChild();
-		}
+        while (replacementNode->rightChild() != nullptr)
+        {
+            replacementNodeParent = replacementNode;
+            replacementNode = replacementNode->rightChild();
+        }
 
-		searchParent(root, replacementNode)->setRightChild(nullptr);
 
-		nodeParent->setRightChild(replacementNode);
+        replacementNodeParent->setRightChild(replacementNode->leftChild());
 
-		replacementNode->setLeftChild(node->leftChild());
-		replacementNode->setRightChild(node->rightChild());
-		delete node;
-		nodeParent->setRightChild(replacementNode);
 
-	}
-	return true;
+        replacementNode->setLeftChild(nullptr);
+
+
+        replacementNode->setLeftChild(node->leftChild());
+        replacementNode->setRightChild(node->rightChild());
+
+        if (nodeParent->rightChild() == node)
+        {
+            nodeParent->setRightChild(replacementNode);
+            delete node;
+        }
+        else
+        {
+            nodeParent->setLeftChild(replacementNode);
+            delete node;
+        }
+        return true;
+    }
 }
 
-BinaryTree::Node* BinaryTree::searchParent(Node* root, Node* node) const
+BinaryTree::Node* BinaryTree::searchParent(Node* root, Node *node) const
 {
 	if (root == nullptr)
 		return nullptr;
-	if (root->rightChild() == node || root->leftChild() == node)
-		return root;
+	if(root->rightChild() == node || root->leftChild() == node)
+			return root;
 	Node* subTreeSearchParentResult = searchParent(root->leftChild(), node);
 	if (!subTreeSearchParentResult)
 	{
