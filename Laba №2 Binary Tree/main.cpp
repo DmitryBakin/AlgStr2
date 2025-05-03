@@ -5,12 +5,12 @@
 void main()
 {
 	
-	BinaryTree::Node* root3 = new BinaryTree::Node(5, nullptr, nullptr);
-	BinaryTree::Node* root4 = new BinaryTree::Node(4, nullptr, root3);
-	BinaryTree::Node* root2 = new BinaryTree::Node(2, nullptr, nullptr);
-	BinaryTree::Node* root = new BinaryTree::Node(2, nullptr, nullptr);
-	BinaryTree::Node* right = new BinaryTree::Node(3, root4, nullptr);
-	BinaryTree::Node* left = new BinaryTree::Node(2, nullptr, right);
+	BinaryTree::Node* root3 = new BinaryTree::Node(2, nullptr, nullptr);
+	BinaryTree::Node* root4 = new BinaryTree::Node(4, nullptr, nullptr);
+	BinaryTree::Node* root2 = new BinaryTree::Node(1, nullptr, root3);
+	BinaryTree::Node* root = new BinaryTree::Node(0, nullptr, root2);
+	BinaryTree::Node* right = new BinaryTree::Node(3, nullptr, root4);
+	BinaryTree::Node* left = new BinaryTree::Node(20, nullptr, root);
 	BinaryTree::Node* now = new BinaryTree::Node(0, nullptr, nullptr);
 
 	BinaryTree BT(left);
@@ -50,7 +50,7 @@ void main()
 	//puts("\n\n\n\n\n");
 	//BT.printTreeHorizontal(0, 10);
 	//puts("\n\n\n\n\n");
-	BT.removeKey(3);
+	BT.removeKey(0);
 	puts("\n\n\n\n\n");
 	BT.printTreeHorizontal(0, 10);
 	puts("\n\n\n\n\n");
