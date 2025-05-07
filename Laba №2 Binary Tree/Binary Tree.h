@@ -45,7 +45,7 @@ public:
 
 	int height() const;
 	int heightNode(int key) const;
-	
+	int indexNode(int key) const;
 
 	int countOfRoots() const;
 
@@ -63,7 +63,7 @@ public:
 	void levelPrint() const;
 	void printTreeHorizontal(int marginLeft, int levelSpacing) const;
 
-	bool treeBalance() const;
+	bool isBalanced() const;
 
 	BinaryTree& operator=(const BinaryTree& other);
 	BinaryTree& operator=(BinaryTree&& other);
@@ -83,6 +83,12 @@ private:
 
 	int height(Node* root) const;
 	int heightNode(Node* root, int key, int level) const;
+	int indexNode(Node* root, int key) const;
+
+	int countOfRoots(Node* node) const;
+
+	int maxKey(Node* node) const;
+	int minKey(Node* node) const;
 
 	Node* addKey(Node* root, int key);
 	Node* nlrSearch(Node* root, int key) const;
@@ -96,7 +102,7 @@ private:
 	void levelPrint(Node* root) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 
-	bool treeBalance(Node* root) const;
+	bool isBalanced(Node* root) const;
 
 	
 

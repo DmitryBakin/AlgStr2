@@ -74,8 +74,6 @@ void BinaryTree::clear()
 void BinaryTree::removeSubtrees()
 {
 	removeSubtrees(m_root);
-	m_root->setLeftChild(nullptr);
-	m_root->setRightChild(nullptr);
 }
 
 bool BinaryTree::isEmpty() const
@@ -93,30 +91,24 @@ int BinaryTree::heightNode(int key) const
 	return heightNode(m_root, key, 1);
 }
 
+int BinaryTree::indexNode(int key) const
+{
+	return indexNode(m_root, key);
+}
+
 int BinaryTree::countOfRoots() const
 {
-	std::vector<int> key;
-	return getVectorKeys(m_root, key).size();
+	return countOfRoots(m_root);
 }
 
 int BinaryTree::maxKey() const
 {
-	std::vector<int> key;
-	getVectorKeys(m_root, key);
-
-	if (key.size() != 0)
-		return key[key.size() - 1];
-	return 0;
+	return maxKey(m_root);
 }
 
 int BinaryTree::minKey() const
 {
-	std::vector<int> key;
-	getVectorKeys(m_root, key);
-
-	if (key.size() != 0)
-		return key[0];
-	return 0;
+	return minKey(m_root);
 }
 
 BinaryTree::Node* BinaryTree::addKey(int key)
@@ -156,9 +148,9 @@ void BinaryTree::printTreeHorizontal(int marginLeft, int levelSpacing) const
 	printHorizontal(m_root, marginLeft, levelSpacing);
 }
 
-bool BinaryTree::treeBalance() const
+bool BinaryTree::isBalanced() const
 {
-	return treeBalance(m_root);
+	return isBalanced(m_root);
 }
 
 BinaryTree& BinaryTree::operator=(const BinaryTree& other)
@@ -214,6 +206,8 @@ void BinaryTree::removeSubtrees(Node* node)
 {
 	clear(node->leftChild());
 	clear(node->rightChild());
+	node->setLeftChild(nullptr);
+	node->setRightChild(nullptr);
 }
 
 int BinaryTree::height(Node* root) const
@@ -244,10 +238,77 @@ int BinaryTree::heightNode(Node* root, int key, int level) const
 		return right;
 }
 
+int BinaryTree::indexNode(Node* root, int key) const
+{
+	if (root == nullptr)
+		return -1;
+
+	std::list<Node*> unprocessedNodes(1, root);
+	int index = 0, level = 0;
+	while (!unprocessedNodes.empty()) {
+		level = unprocessedNodes.size();
+
+		while (level != 0)
+		{
+			Node* node = unprocessedNodes.front();
+			unprocessedNodes.pop_front();
+
+			if (node->leftChild())
+				unprocessedNodes.push_back(node->leftChild());
+			if (node->rightChild())
+				unprocessedNodes.push_back(node->rightChild());
+
+			if (node->key() == key)
+				return index;
+
+			level--;
+			index++;
+		}
+	}
+	return -1;
+}
+
+int BinaryTree::countOfRoots(Node * node) const
+{
+	if (node == nullptr)
+		return 0;
+
+	return (1 + countOfRoots(node->leftChild()) + countOfRoots(node->rightChild()));
+}
+
+int BinaryTree::maxKey(Node* node) const
+{
+	if (node == nullptr)
+		return INT_MIN;
+
+	int maxLeft = maxKey(node->leftChild());
+	int maxRight = maxKey(node->rightChild());
+
+	return std::max(node->key(), std::max(maxLeft, maxRight));
+
+}
+
+int BinaryTree::minKey(Node* node) const
+{
+	if (node == nullptr)
+		return INT_MAX;
+
+	int minLeft = minKey(node->leftChild());
+	int minRight = minKey(node->rightChild());
+
+	return std::min(node->key(), std::min(minLeft, minRight));
+}
+
 BinaryTree::Node* BinaryTree::addKey(Node* root, int key)
 {
-	if (!root) {
+	if (!root) 
+	{
 		root = new Node(key);
+	}
+
+	if (m_root == nullptr)
+	{
+		m_root = root;
 	}
 	else if (rand() % 2) {
 		root->setLeftChild(addKey(root->leftChild(), key));
@@ -297,138 +358,94 @@ bool BinaryTree::removeKey(Node* root, int key)
             delete node;
             m_root = nullptr;
         }
-        return true;
     }
-    else if (node->leftChild() != nullptr && node->rightChild() == nullptr)
+    else if ((node->leftChild() != nullptr && node->rightChild() == nullptr) || (node->leftChild() == nullptr && node->rightChild() != nullptr))
     {
-        Node* replacementNodeParent = node;
-        replacementNode = node;
         if (nodeParent != nullptr)
         {
-
-            if (nodeParent->leftChild() == node)
-            {
-                nodeParent->setLeftChild(node->leftChild());
-                delete node;
-            }
-            else
-            {
-                nodeParent->setRightChild(node->leftChild());
-                delete node;
-            }
-        }
-        else
-        {
-            m_root = node->leftChild();
-            delete node;
-        }
-        return true;
-    }
-    else if (node->leftChild() == nullptr && node->rightChild() != nullptr)
-    {
-        Node* replacementNodeParent = node;
-        replacementNode = node;
-
-		if (nodeParent != nullptr)
-		{
-
 			if (nodeParent->leftChild() == node)
 			{
-				nodeParent->setLeftChild(node->rightChild());
+				if (node->leftChild() != nullptr)
+					nodeParent->setLeftChild(node->leftChild());
+				else
+					nodeParent->setLeftChild(node->rightChild());
 				delete node;
 			}
 			else
 			{
-				nodeParent->setRightChild(node->rightChild());
+				if (node->leftChild() != nullptr)
+					nodeParent->setRightChild(node->leftChild());
+				else
+					nodeParent->setRightChild(node->rightChild());
 				delete node;
 			}
+        }
+        else
+        {
+			if (node->leftChild() != nullptr)
+				m_root = node->leftChild();
+			else
+				m_root = node->rightChild();
+            delete node;
+        }
+    }
+    else
+    {
+        Node* replacementNodeParent = node;
+        replacementNode = node;
 
+        while (replacementNode->rightChild() != nullptr)
+        {
+            replacementNodeParent = replacementNode;
+            replacementNode = replacementNode->rightChild();
+        }
+		if (nodeParent != nullptr)
+		{
+			if (node == replacementNodeParent)
+			{
+				replacementNode->setRightChild(replacementNode->leftChild());
+				replacementNode->setLeftChild(node->leftChild());
+				if (nodeParent->rightChild() == node)
+				{
+					nodeParent->setRightChild(replacementNode);
+					delete node;
+				}
+				else
+				{
+					nodeParent->setLeftChild(replacementNode);
+					delete node;
+				}
+			}
+			else
+			{
+				replacementNodeParent->setRightChild(replacementNode->leftChild());
+				replacementNode->setLeftChild(node->leftChild());
+				replacementNode->setRightChild(node->rightChild());
+				if (nodeParent->rightChild() == node)
+					nodeParent->setRightChild(replacementNode);
+				else
+					nodeParent->setLeftChild(replacementNode);
+				delete node;
+			}
 		}
-        else
-        {
-			m_root = node->rightChild();
+		else
+		{
+			if (node == replacementNodeParent)
+			{
+				replacementNode->setRightChild(replacementNode->leftChild());
+				replacementNode->setLeftChild(node->leftChild());
+			}
+			else
+			{
+				replacementNodeParent->setRightChild(replacementNode->leftChild());
+				replacementNode->setLeftChild(node->leftChild());
+				replacementNode->setRightChild(node->rightChild());
+			}
+			m_root = replacementNode;
 			delete node;
-
-        }
-        return true;
+		}
     }
-    else if (node == root)
-    {
-        Node* replacementNodeParent = node;
-        replacementNode = node;
-
-        while (replacementNode->rightChild() != nullptr)
-        {
-            replacementNodeParent = replacementNode;
-            replacementNode = replacementNode->rightChild();
-        }
-
-        if (node == replacementNodeParent)
-        {
-            m_root = replacementNode;
-            m_root->setRightChild(replacementNode->leftChild());
-            m_root->setLeftChild(node->leftChild());
-            delete node;
-        }
-        else
-        {
-            replacementNodeParent->setRightChild(replacementNode->leftChild());
-            replacementNode->setLeftChild(node->leftChild());
-            replacementNode->setRightChild(node->rightChild());
-
-            m_root = replacementNode;
-
-            delete node;
-            
-        }
-        return true;
-    }
-    else if (node->leftChild() != nullptr && node->rightChild() != nullptr)
-    {
-        Node* replacementNodeParent = node;
-        replacementNode = node;
-
-        while (replacementNode->rightChild() != nullptr)
-        {
-            replacementNodeParent = replacementNode;
-            replacementNode = replacementNode->rightChild();
-        }
-
-        if (node == replacementNodeParent)
-        {
-            replacementNode->setRightChild(replacementNode->leftChild());
-            replacementNode->setLeftChild(node->leftChild());
-            if (nodeParent->rightChild() == node)
-            {
-                nodeParent->setRightChild(replacementNode);
-                delete node;
-            }
-            else
-            {
-                nodeParent->setLeftChild(replacementNode);
-                delete node;
-            }
-        }
-        else
-        {
-
-            replacementNodeParent->setRightChild(replacementNode->leftChild());
-            replacementNode->setLeftChild(nullptr);
-            replacementNode->setLeftChild(node->leftChild());
-            replacementNode->setRightChild(node->rightChild());
-            if (nodeParent->rightChild() == node)
-            {
-                nodeParent->setRightChild(replacementNode);
-                delete node;
-            }
-            else
-            {
-                nodeParent->setLeftChild(replacementNode);
-                delete node;
-            }
-        }
-        return true;
-    }
+	return true;
 }
 
 BinaryTree::Node* BinaryTree::searchParent(Node* root, Node *node) const
@@ -447,14 +464,7 @@ BinaryTree::Node* BinaryTree::searchParent(Node* root, Node *node) const
 
 bool BinaryTree::contains(Node* root, int key) const
 {
-	std::vector<int> keys;
-	getVectorKeys(root, keys);
-	for (int i = 0; i < keys.size(); i++)
-	{
-		if (keys[i] == key)
-			return true;
-	}
-	return false;
+	return nlrSearch(key);
 }
 
 std::vector<int> BinaryTree::getVectorKeys(Node* root, std::vector<int>& keys) const
@@ -512,7 +522,7 @@ void BinaryTree::printHorizontal(Node* root, int marginLeft, int levelSpacing) c
 	printHorizontal(root->leftChild(), marginLeft + levelSpacing, levelSpacing);
 }
 
-bool BinaryTree::treeBalance(Node* root) const
+bool BinaryTree::isBalanced(Node* root) const
 {
 	if (root == nullptr)
 		return true;
@@ -520,5 +530,5 @@ bool BinaryTree::treeBalance(Node* root) const
 	int leftHeight = height(root->leftChild());
 	int rightHeight = height(root->rightChild());
 
-	return std::abs(leftHeight - rightHeight) <= 1 && treeBalance(root->leftChild()) && treeBalance(root->rightChild());
+	return std::abs(leftHeight - rightHeight) <= 1 && isBalanced(root->leftChild()) && isBalanced(root->rightChild());
 }
