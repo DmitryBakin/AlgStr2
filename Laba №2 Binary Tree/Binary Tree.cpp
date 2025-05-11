@@ -86,9 +86,9 @@ int BinaryTree::height() const
 	return height(m_root);
 }
 
-int BinaryTree::heightNode(int key) const
+int BinaryTree::nodeHeightIndex(int key) const
 {
-	return heightNode(m_root, key, 1);
+	return nodeHeightIndex(m_root, key, 0);
 }
 
 int BinaryTree::indexNode(int key) const
@@ -221,7 +221,7 @@ int BinaryTree::height(Node* root) const
 	return 1 + std::max(left, right);
 }
 
-int BinaryTree::heightNode(Node* root, int key, int level) const
+int BinaryTree::nodeHeightIndex(Node* root, int key, int level) const
 {
 	if (root == nullptr) 
 		return -1;
@@ -229,11 +229,11 @@ int BinaryTree::heightNode(Node* root, int key, int level) const
 	if (root->key() == key)
 		return level;
 
-	int left = heightNode(root->leftChild(), key, level + 1);
+	int left = nodeHeightIndex(root->leftChild(), key, level + 1);
 	if (left != -1)
 		return left;
 
-	int right = heightNode(root->rightChild(), key, level + 1);
+	int right = nodeHeightIndex(root->rightChild(), key, level + 1);
 	if (right != -1)
 		return right;
 }
@@ -301,14 +301,14 @@ int BinaryTree::minKey(Node* node) const
 
 BinaryTree::Node* BinaryTree::addKey(Node* root, int key)
 {
-	if (!root) 
+	if (!root)
 	{
 		root = new Node(key);
-	}
-
-	if (m_root == nullptr)
-	{
-		m_root = root;
+		if (m_root == nullptr)
+		{
+			m_root = root;
+			return root;
+		}
 	}
 	else if (rand() % 2) {
 		root->setLeftChild(addKey(root->leftChild(), key));
@@ -335,15 +335,12 @@ bool BinaryTree::removeKey(Node* root, int key)
 {
     Node* node = nlrSearch(key);
     Node* nodeParent = searchParent(root, node);
-    Node* replacementNode;
-
+    
     if (node == nullptr)
         return false;
 
     if (node->leftChild() == nullptr && node->rightChild() == nullptr)
     {
-        replacementNode = nullptr;
-
         if (nodeParent != nullptr)
         {
             if (nodeParent->leftChild() == node)
@@ -369,7 +366,6 @@ bool BinaryTree::removeKey(Node* root, int key)
 					nodeParent->setLeftChild(node->leftChild());
 				else
 					nodeParent->setLeftChild(node->rightChild());
-				delete node;
 			}
 			else
 			{
@@ -377,8 +373,8 @@ bool BinaryTree::removeKey(Node* root, int key)
 					nodeParent->setRightChild(node->leftChild());
 				else
 					nodeParent->setRightChild(node->rightChild());
-				delete node;
 			}
+			delete node;
         }
         else
         {
@@ -391,7 +387,8 @@ bool BinaryTree::removeKey(Node* root, int key)
     }
     else
     {
-        Node* replacementNodeParent = node;
+		Node* replacementNode, * replacementNodeParent;
+        replacementNodeParent = node;
         replacementNode = node;
 
         while (replacementNode->rightChild() != nullptr)
@@ -405,42 +402,29 @@ bool BinaryTree::removeKey(Node* root, int key)
 			{
 				replacementNode->setRightChild(replacementNode->leftChild());
 				replacementNode->setLeftChild(node->leftChild());
-				if (nodeParent->rightChild() == node)
-				{
-					nodeParent->setRightChild(replacementNode);
-					delete node;
-				}
-				else
-				{
-					nodeParent->setLeftChild(replacementNode);
-					delete node;
-				}
 			}
 			else
 			{
 				replacementNodeParent->setRightChild(replacementNode->leftChild());
 				replacementNode->setLeftChild(node->leftChild());
 				replacementNode->setRightChild(node->rightChild());
-				if (nodeParent->rightChild() == node)
-					nodeParent->setRightChild(replacementNode);
-				else
-					nodeParent->setLeftChild(replacementNode);
-				delete node;
+				
 			}
+			if (nodeParent->rightChild() == node)
+				nodeParent->setRightChild(replacementNode);
+			else
+				nodeParent->setLeftChild(replacementNode);
+			delete node;
 		}
 		else
 		{
-			if (node == replacementNodeParent)
-			{
-				replacementNode->setRightChild(replacementNode->leftChild());
-				replacementNode->setLeftChild(node->leftChild());
-			}
-			else
+			if (node != replacementNodeParent)
 			{
 				replacementNodeParent->setRightChild(replacementNode->leftChild());
-				replacementNode->setLeftChild(node->leftChild());
-				replacementNode->setRightChild(node->rightChild());
 			}
+			replacementNode->setLeftChild(node->leftChild());
+			replacementNode->setRightChild(node->rightChild());
+			
 			m_root = replacementNode;
 			delete node;
 		}

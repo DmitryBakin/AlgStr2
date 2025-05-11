@@ -13,12 +13,13 @@ void main()
 	BinaryTree::Node* left = new BinaryTree::Node(20, nullptr, root);
 	BinaryTree::Node* now = new BinaryTree::Node(0, left, right);
 
-	BinaryTree BT(now);
+	BinaryTree BT(root4);
 	BT.printTreeHorizontal(0, 15);
 	//BinaryTree BT1 = BT;
 	//BinaryTree BT1(now);
-	std::cout << BT.indexNode(0);
-	//std::cout << "\n" << BT.maxKey();
+	//BT.addKey(12);
+	BT.addKey(3);
+	std::cout << "\n" << BT.nodeHeightIndex(1);
 }
 
 

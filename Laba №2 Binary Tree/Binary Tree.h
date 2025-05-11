@@ -33,7 +33,7 @@ public:
 	BinaryTree(Node* root);
 	BinaryTree(const BinaryTree& other);
 	BinaryTree(BinaryTree&& other);
-	~BinaryTree();
+	virtual ~BinaryTree();
 
 	Node* root() const;
 
@@ -44,21 +44,22 @@ public:
 	bool isEmpty() const;
 
 	int height() const;
-	int heightNode(int key) const;
+	virtual int nodeHeightIndex(int key) const;
 	int indexNode(int key) const;
 
 	int countOfRoots() const;
 
-	int maxKey() const;
-	int minKey() const;
+	virtual int maxKey() const;
+	virtual int minKey() const;
 
-	Node* addKey(int key);
+	virtual Node* addKey(int key);
 	Node* nlrSearch(int key) const;
 
-	bool removeKey(int key);
+	virtual bool removeKey(int key);
+	Node* searchParent(Node* root, Node* node) const;
 	
 	bool contains(int key) const;
-	std::vector<int> getVectorKeys() const;
+	virtual std::vector<int> getVectorKeys() const;
 
 	void levelPrint() const;
 	void printTreeHorizontal(int marginLeft, int levelSpacing) const;
@@ -68,13 +69,13 @@ public:
 	BinaryTree& operator=(const BinaryTree& other);
 	BinaryTree& operator=(BinaryTree&& other);
 	
-
+	void setRoot(Node* root);
 
 private:
 	Node* m_root = nullptr;
 
 private:
-	void setRoot(Node* root);
+	
 
 	Node* copyTree(Node* root);
 
@@ -82,30 +83,26 @@ private:
 	void removeSubtrees(Node* node);
 
 	int height(Node* root) const;
-	int heightNode(Node* root, int key, int level) const;
+	virtual int nodeHeightIndex(Node* root, int key, int level) const;
 	int indexNode(Node* root, int key) const;
 
 	int countOfRoots(Node* node) const;
 
-	int maxKey(Node* node) const;
-	int minKey(Node* node) const;
+	virtual int maxKey(Node* node) const;
+	virtual int minKey(Node* node) const;
 
-	Node* addKey(Node* root, int key);
+	virtual Node* addKey(Node* root, int key);
 	Node* nlrSearch(Node* root, int key) const;
 
-	bool removeKey(Node* root, int key);
-	Node* searchParent(Node* root, Node* node) const;
+	virtual bool removeKey(Node* root, int key);
 
 	bool contains(Node* root, int key) const;
-	std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const;
+	virtual std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const;
 
 	void levelPrint(Node* root) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 
 	bool isBalanced(Node* root) const;
-
-	
-
 };
 
 
