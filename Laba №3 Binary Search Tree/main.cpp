@@ -18,8 +18,8 @@ int main()
 
 	BT.printTreeHorizontal(0, 15);
 	puts("\n\n\n\n\n\n\n");
-	BT.removeKey(12);
-	BT.printTreeHorizontal(0, 15);
+	std::cout << "\n" <<  BT.nodeHeightIndex(5342);
+	//BT.printTreeHorizontal(0, 15);
 
 	//std::cout << BT.findKey(-100) << "\n" << BT.root()->leftChild() << "\n";
 	//std::cout << BT.findKey(-99) << "\n" << BT.root()->leftChild()->rightChild() << "\n";

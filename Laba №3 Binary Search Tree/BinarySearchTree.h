@@ -22,6 +22,8 @@ public:
 	int minKey() const override;
 	int maxKey() const override;
 
+	int nodeHeightIndex(int key) const override;
+
 	std::vector<int> getVectorKeys() const override;
 
 	BinarySearchTree& operator=(const BinarySearchTree& other) = default;
@@ -37,6 +39,8 @@ private:
 	int minKey(Node* root) const override;
 	int maxKey(Node* root) const override;
 
+	int nodeHeightIndex(Node* node, int key, int level) const override;
+
 	std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const override;
 };
 
@@ -46,20 +50,3 @@ private:
 
 
 
-
-
-
-
-/*
-Ќеобходимые методы класса:
-- конструкторы (по умолчанию, копировани€, перемещени€); +
-- деструктор; +
-- получение минимального/максимального ключа дерева (имеет другой алгоритм); +
-- добавление узла в дерево (имеет другой алгоритм); +
-- удаление узла из дерева по ключу (возвращает true, если узел был удалЄн) (имеет другой алгоритм); +
-- поиск узла дерева по ключу (имеет другой алгоритм); +
-- получение уровн€ вершины по ключу (возвращает индекс уровн€ или -1, если вершина не найдена) (имеет другой алгоритм);
-- получение вектора (std::vector<int>), содержащего все ключи дерева по возрастанию (имеет другой алгоритм); +
-- оператор присваивани€; +
-- оператор перемещени€. +
-*/

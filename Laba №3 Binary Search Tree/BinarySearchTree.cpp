@@ -1,4 +1,4 @@
-﻿#include "BinarySearchTree.h"
+#include "BinarySearchTree.h"
 
 
 
@@ -15,6 +15,11 @@ int BinarySearchTree::minKey() const
 int BinarySearchTree::maxKey() const
 {
 	return maxKey(root());
+}
+
+int BinarySearchTree::nodeHeightIndex(int key) const
+{
+	return nodeHeightIndex(root(), key, 0);
 }
 
 std::vector<int> BinarySearchTree::getVectorKeys() const
@@ -47,7 +52,7 @@ BinarySearchTree::Node* BinarySearchTree::addKey(Node* root, int key)
 	else if (key < root->key()) {
 		root->setLeftChild(addKey(root->leftChild(), key));
 	}
-	else {
+	else if(key > root->key()) {
 		root->setRightChild(addKey(root->rightChild(), key));
 	}
 	return root;
@@ -107,7 +112,7 @@ bool BinarySearchTree::removeKey(Node* root, int key)
 			delete node;
 		}
 	}
-	else 
+	else
 	{
 		Node* replacementNode, * replacementNodeParent;
 		replacementNode = node->rightChild();
@@ -126,7 +131,7 @@ bool BinarySearchTree::removeKey(Node* root, int key)
 		}
 		replacementNode->setLeftChild(node->leftChild());
 
-		if (nodeParent != nullptr) 
+		if (nodeParent != nullptr)
 		{
 			if (nodeParent->rightChild() == node)
 			{
@@ -149,7 +154,7 @@ bool BinarySearchTree::removeKey(Node* root, int key)
 
 BinarySearchTree::Node* BinarySearchTree::findKey(Node* root, int key) const
 {
-	if(root == nullptr)
+	if (root == nullptr)
 		return nullptr;
 
 	if (root->key() == key)
@@ -188,6 +193,18 @@ int BinarySearchTree::maxKey(Node* root) const
 	}
 
 	return nodeMax->key();
+}
+
+int BinarySearchTree::nodeHeightIndex(Node* node, int key, int level) const
+{
+	if (node == nullptr)
+		return -1;
+	if (key < node->key())
+		level = nodeHeightIndex(node->leftChild(), key, level + 1);
+	else if (key > node->key())
+		level = nodeHeightIndex(node->rightChild(), key, level + 1);
+
+	return level;
 }
 
 std::vector<int> BinarySearchTree::getVectorKeys(Node* root, std::vector<int>& keys) const
