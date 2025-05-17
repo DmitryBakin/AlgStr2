@@ -5,8 +5,8 @@ int main()
 	BinarySearchTree::Node* load = new BinarySearchTree::Node(12, nullptr, nullptr);
 
 	BinarySearchTree BT(load);
-	BT.addKey(20);
-	BT.addKey(-100);
+
+	BT.minKey();
 	BT.addKey(-90);
 	BT.addKey(-1000);
 	BT.addKey(-999);

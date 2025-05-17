@@ -1,42 +1,8 @@
 #include "BinarySearchTree.h"
 
-
-
 BinarySearchTree::BinarySearchTree(Node* node)
 {
 	setRoot(node);
-}
-
-int BinarySearchTree::minKey() const
-{
-	return minKey(root());
-}
-
-int BinarySearchTree::maxKey() const
-{
-	return maxKey(root());
-}
-
-int BinarySearchTree::nodeHeightIndex(int key) const
-{
-	return nodeHeightIndex(root(), key, 0);
-}
-
-std::vector<int> BinarySearchTree::getVectorKeys() const
-{
-	std::vector<int> keys;
-	getVectorKeys(root(), keys);
-	return keys;
-}
-
-BinarySearchTree::Node* BinarySearchTree::addKey(int key)
-{
-	return addKey(root(), key);
-}
-
-bool BinarySearchTree::removeKey(int key)
-{
-	return removeKey(root(), key);
 }
 
 BinarySearchTree::Node* BinarySearchTree::findKey(int key) const
