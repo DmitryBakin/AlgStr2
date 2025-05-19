@@ -41,7 +41,6 @@ protected:
 
 private:
 	Node* findKey(Node* root, int key) const;
-	Node* buildRootForOptimalTree(std::vector<std::vector<int>>& matrixKeyNumbers, std::vector<int>& keys, int i, int j);
 };
 
 

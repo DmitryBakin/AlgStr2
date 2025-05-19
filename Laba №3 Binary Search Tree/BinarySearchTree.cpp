@@ -6,7 +6,7 @@ BinarySearchTree::BinarySearchTree(Node* node)
 }
 
 
-BinarySearchTree::Node* BinarySearchTree::buildRootForOptimalTree(std::vector<std::vector<int>>& matrixKeyNumbers, std::vector<int>& keys, int i, int j)
+BinarySearchTree::Node* buildRootForOptimalTree(std::vector<std::vector<int>>& matrixKeyNumbers, std::vector<int>& keys, int i, int j)
 {
 	int k;
 
@@ -15,7 +15,7 @@ BinarySearchTree::Node* BinarySearchTree::buildRootForOptimalTree(std::vector<st
 	else
 		k = matrixKeyNumbers[i][j];
 
-	BinarySearchTree::Node* node = new BinarySearchTree::Node(keys[k-1]);
+	BinarySearchTree::Node* node = new BinarySearchTree::Node(keys[k - 1]);
 
 	node->setLeftChild(buildRootForOptimalTree(matrixKeyNumbers, keys, i, k - 1));
 	node->setRightChild(buildRootForOptimalTree(matrixKeyNumbers, keys, k, j));
@@ -25,7 +25,7 @@ BinarySearchTree::Node* BinarySearchTree::buildRootForOptimalTree(std::vector<st
 
 BinarySearchTree BinarySearchTree::buildOptimalTree(std::vector<int>& keys, std::vector<int>& nodeFrequencies, std::vector<int>& trapFrequencies)
 {
-	
+
 
 	std::vector<std::vector<int>> matrixWeight(keys.size() + 1, std::vector<int>(keys.size() + 1, 0));
 	std::vector<std::vector<int>> matrixCost = matrixWeight;
@@ -52,8 +52,8 @@ BinarySearchTree BinarySearchTree::buildOptimalTree(std::vector<int>& keys, std:
 			{
 				int j = i + h;
 				matrixWeight[i][j] = matrixWeight[i][j - 1] + nodeFrequencies[j - 1] + trapFrequencies[j];
-				
-				
+
+
 				int minValueIndex = 0, minValue = INT_MAX;
 				for (int k = i + 1; k < j + 1; k++)
 				{
@@ -65,14 +65,14 @@ BinarySearchTree BinarySearchTree::buildOptimalTree(std::vector<int>& keys, std:
 				}
 
 				matrixCost[i][j] = matrixWeight[i][j] + matrixCost[i][minValueIndex - 1] + matrixCost[minValueIndex][j];
-				
+
 				matrixKeyNumbers[i][j] = minValueIndex;
 			}
 		}
 	}
 
 	BinarySearchTree BST;
-	BST.setRoot(BST.buildRootForOptimalTree(matrixKeyNumbers, keys, 0, keys.size()));
+	BST.setRoot(buildRootForOptimalTree(matrixKeyNumbers, keys, 0, keys.size()));
 
 
 	return BST;
@@ -91,7 +91,7 @@ BinarySearchTree::Node* BinarySearchTree::addKey(Node* root, int key)
 	else if (key < root->key()) {
 		root->setLeftChild(addKey(root->leftChild(), key));
 	}
-	else if(key > root->key()) {
+	else if (key > root->key()) {
 		root->setRightChild(addKey(root->rightChild(), key));
 	}
 	return root;
