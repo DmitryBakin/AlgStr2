@@ -52,7 +52,7 @@ public:
 
 	void build(const std::string& text);
 
-	double encode(const std::string& text, const std::string& encodedText);
+	double encode(const std::string& textFilename, const std::string& encodedTextFilename);
 
 	bool decode(const std::string& encodedText, std::string& decodedText);
 
@@ -71,3 +71,5 @@ private:
 
 
 };
+
+

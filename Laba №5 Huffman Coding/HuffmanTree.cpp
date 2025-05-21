@@ -2,6 +2,8 @@
 
 #include "iostream"
 
+
+
 HuffmanTree::Node::Node()
 {}
 
@@ -92,6 +94,9 @@ void HuffmanTree::build(const std::string& textFilename)
     std::ifstream textFile;
     textFile.open(textFilename);
 
+    if (!textFile.is_open())
+        return;
+
     char ch;
 
     textFile >> ch;
@@ -159,6 +164,7 @@ void HuffmanTree::build(const std::string& textFilename)
         {
             BV[i] = nodes[0]->symbols()[i] || nodes[1]->symbols()[i];
         }
+
         root->setSymbols(BV);
         
         root->setLeftChild(nodes[0]);
@@ -171,24 +177,32 @@ void HuffmanTree::build(const std::string& textFilename)
 
     m_root = nodes.front();
 }
+bool isEndFile(const std::string& fileBI);
 
 double HuffmanTree::encode(const std::string& textFilename, const std::string& encodedTextFilename)
 {
-    if (m_root == nullptr)
-    {
-        build(textFilename);
-    }
-
     std::ifstream textFile;
     std::ofstream encodedTextFile;
+
+    std::string encodedText;
 
     int textFileSize = 0;
     char symbol;
 
-    std::string encodedText;
-
     textFile.open(textFilename);
     encodedTextFile.open(encodedTextFilename);
+
+    if (isEndFile(textFilename) || !textFile.is_open() || !encodedTextFile.is_open())
+    {
+        textFile.close();
+        encodedTextFile.close();
+        return -1;
+    }
+
+    if (m_root == nullptr)
+    {
+        build(textFilename);
+    }
 
     textFile >> symbol;
 
@@ -203,15 +217,6 @@ double HuffmanTree::encode(const std::string& textFilename, const std::string& e
 
     double compresСoef = encodedText.size() / (textFileSize * 8.);
 
-    /*
-    puts("");
-    for (int i = 0; i < encodedText.size(); i++)
-    {
-        std::cout << encodedText[i];
-    }
-    puts("");
-    */
-
     for (int i = 0; i < encodedText.size(); i++)
     {
         encodedTextFile << encodedText[i];
@@ -219,6 +224,7 @@ double HuffmanTree::encode(const std::string& textFilename, const std::string& e
 
     textFile.close();
     encodedTextFile.close();
+
     return compresСoef;
 }
 
@@ -276,4 +282,18 @@ void HuffmanTree::clear(Node* node)
 
 	delete node;
 	node = nullptr;
+}
+
+
+bool isEndFile(const std::string& fileBI)
+{
+    std::ifstream fileB(fileBI);
+    char ch;
+    if (!(fileB >> ch))
+    {
+        fileB.close();
+        return true;
+    }
+    fileB.close();
+    return false;
 }
