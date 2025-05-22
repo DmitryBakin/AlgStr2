@@ -1,5 +1,8 @@
 ﻿#include "Binary Tree.h"
 
+#include <list>
+#include <algorithm>
+
 BinaryTree::Node::Node()
 {}
 
@@ -96,9 +99,9 @@ int BinaryTree::indexNode(int key) const
 	return indexNode(m_root, key);
 }
 
-int BinaryTree::countOfRoots() const
+int BinaryTree::countNodes() const
 {
-	return countOfRoots(m_root);
+	return countNodes(m_root);
 }
 
 int BinaryTree::maxKey() const
@@ -268,12 +271,12 @@ int BinaryTree::indexNode(Node* root, int key) const
 	return -1;
 }
 
-int BinaryTree::countOfRoots(Node * node) const
+int BinaryTree::countNodes(Node * node) const
 {
 	if (node == nullptr)
 		return 0;
 
-	return (1 + countOfRoots(node->leftChild()) + countOfRoots(node->rightChild()));
+	return (1 + countNodes(node->leftChild()) + countNodes(node->rightChild()));
 }
 
 int BinaryTree::maxKey(Node* node) const

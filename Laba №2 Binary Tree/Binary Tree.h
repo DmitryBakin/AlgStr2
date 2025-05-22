@@ -1,9 +1,7 @@
 #pragma once
 
-#include "iostream"
 #include <vector>
-#include <list>
-#include <algorithm>
+
 
 class BinaryTree 
 {
@@ -44,22 +42,22 @@ public:
 	bool isEmpty() const;
 
 	int height() const;
-	virtual int nodeHeightIndex(int key) const;
+	int nodeHeightIndex(int key) const;
 	int indexNode(int key) const;
 
-	int countOfRoots() const;
+	int countNodes() const;
 
-	virtual int maxKey() const;
-	virtual int minKey() const;
+	int maxKey() const;
+	int minKey() const;
 
-	virtual Node* addKey(int key);
+	Node* addKey(int key);
 	Node* nlrSearch(int key) const;
 
-	virtual bool removeKey(int key);
+	bool removeKey(int key);
 	Node* searchParent(Node* root, Node* node) const;
 	
 	bool contains(int key) const;
-	virtual std::vector<int> getVectorKeys() const;
+	std::vector<int> getVectorKeys() const;
 
 	void levelPrint() const;
 	void printTreeHorizontal(int marginLeft, int levelSpacing) const;
@@ -71,33 +69,37 @@ public:
 	
 	void setRoot(Node* root);
 
+protected:
+	virtual int nodeHeightIndex(Node* root, int key, int level) const;
+
+	virtual int maxKey(Node* node) const;
+	virtual int minKey(Node* node) const;
+
+	virtual Node* addKey(Node* root, int key);
+
+	virtual bool removeKey(Node* root, int key);
+
+	virtual std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const;
+
 private:
 	Node* m_root = nullptr;
 
 private:
-	
-
 	Node* copyTree(Node* root);
 
 	void clear(Node* node);
 	void removeSubtrees(Node* node);
 
 	int height(Node* root) const;
-	virtual int nodeHeightIndex(Node* root, int key, int level) const;
 	int indexNode(Node* root, int key) const;
 
-	int countOfRoots(Node* node) const;
+	int countNodes(Node* node) const;
 
-	virtual int maxKey(Node* node) const;
-	virtual int minKey(Node* node) const;
-
-	virtual Node* addKey(Node* root, int key);
 	Node* nlrSearch(Node* root, int key) const;
 
-	virtual bool removeKey(Node* root, int key);
+
 
 	bool contains(Node* root, int key) const;
-	virtual std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const;
 
 	void levelPrint(Node* root) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
@@ -105,51 +107,3 @@ private:
 	bool isBalanced(Node* root) const;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-* Необходимые методы класса Node (на оценку "удовлетворительно" данный класс можно реализовать в виде структуры с отрытым доступом член-данных):
-- конструкторы (по умолчанию и с параметрами); +
-- получение/изменение ключа узла (целое число); +
-- получение/изменение потомков узла; +
-
-Необходимые методы класса BinaryTree:
-- конструкторы (по умолчанию +, копирования +, перемещения +);
-- деструктор; +
-- получение корня дерева; +
-- очистка дерева (удаление всех узлов); +
-- удаление поддеревьев узла; +
-- isEmpty (возвращает true, если дерево пусто); +
-- получение высоты дерева; +
-- получение количества узлов дерева; +
-- получение минимального/максимального ключа дерева; +
-- добавление узла в дерево (методом случайного выбора поддерева); +
-- удаление узла из дерева по ключу (возвращает true, если узел был удалён); +
-- поиск узла дерева по ключу; +
-- проверка дерева на сбалансированность (возвращает true, если дерево является сбалансированным: высоты правого и левого поддеревьев отличаются не более, чем на единицу, и сами поддеревья также являются сбалансированными); +
-- получение уровня вершины по ключу (возвращает индекс уровня или -1, если вершина не найдена); +
-- получение вектора (std::vector<int>), содержащего все ключи дерева по возрастанию (обход вершин производить любым способом); +
-- вывод в консоль дерева в горизонтальном виде (самый правый потомок находится на первой строке, самый левый - на нижней); +
-- вывод в консоль дерева по уровням в консоль; +
-- оператор присваивания; +
-- оператор перемещения. +
-*/
