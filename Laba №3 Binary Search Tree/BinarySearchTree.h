@@ -20,6 +20,8 @@ public:
 	using BinaryTree::nodeHeightIndex;
 	using BinaryTree::getVectorKeys;
 
+	static BinarySearchTree buildOptimalTree(std::vector<int>& keys, std::vector<int>& frequenciesP, std::vector<int>& frequenciesQ);
+
 	Node* findKey(int key) const;
 
 	BinarySearchTree& operator=(const BinarySearchTree& other) = default;

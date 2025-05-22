@@ -5,6 +5,79 @@ BinarySearchTree::BinarySearchTree(Node* node)
 	setRoot(node);
 }
 
+
+BinarySearchTree::Node* buildRootForOptimalTree(std::vector<std::vector<int>>& matrixKeyNumbers, std::vector<int>& keys, int i, int j)
+{
+	int k;
+
+	if (i >= j)
+		return nullptr;
+	else
+		k = matrixKeyNumbers[i][j];
+
+	BinarySearchTree::Node* node = new BinarySearchTree::Node(keys[k - 1]);
+
+	node->setLeftChild(buildRootForOptimalTree(matrixKeyNumbers, keys, i, k - 1));
+	node->setRightChild(buildRootForOptimalTree(matrixKeyNumbers, keys, k, j));
+
+	return node;
+}
+
+BinarySearchTree BinarySearchTree::buildOptimalTree(std::vector<int>& keys, std::vector<int>& nodeFrequencies, std::vector<int>& trapFrequencies)
+{
+
+
+	std::vector<std::vector<int>> matrixWeight(keys.size() + 1, std::vector<int>(keys.size() + 1, 0));
+	std::vector<std::vector<int>> matrixCost = matrixWeight;
+	std::vector<std::vector<int>> matrixKeyNumbers = matrixWeight;
+
+	for (int i = 0; i < matrixWeight.size(); i++)
+	{
+		matrixWeight[i][i] = trapFrequencies[i];
+		matrixCost[i][i] = trapFrequencies[i];
+	}
+
+	for (int i = 0; i < matrixWeight.size() - 1; i++)
+	{
+		matrixWeight[i][i + 1] = matrixWeight[i][i] + nodeFrequencies[i] + trapFrequencies[i + 1];
+		matrixCost[i][i + 1] = matrixWeight[i][i + 1] + matrixCost[i][i] + matrixCost[i + 1][i + 1];
+		matrixKeyNumbers[i][i + 1] = i + 1;
+	}
+
+	if (keys.size() >= 2)
+	{
+		for (int h = 2; h < keys.size() + 1; h++)
+		{
+			for (int i = 0; i < keys.size() - h + 1; i++)
+			{
+				int j = i + h;
+				matrixWeight[i][j] = matrixWeight[i][j - 1] + nodeFrequencies[j - 1] + trapFrequencies[j];
+
+
+				int minValueIndex = 0, minValue = INT_MAX;
+				for (int k = i + 1; k < j + 1; k++)
+				{
+					if (minValue > (matrixCost[i][k - 1] + matrixCost[k][j]))
+					{
+						minValue = matrixCost[i][k - 1] + matrixCost[k][j];
+						minValueIndex = k;
+					}
+				}
+
+				matrixCost[i][j] = matrixWeight[i][j] + matrixCost[i][minValueIndex - 1] + matrixCost[minValueIndex][j];
+
+				matrixKeyNumbers[i][j] = minValueIndex;
+			}
+		}
+	}
+
+	BinarySearchTree BST;
+	BST.setRoot(buildRootForOptimalTree(matrixKeyNumbers, keys, 0, keys.size()));
+
+
+	return BST;
+}
+
 BinarySearchTree::Node* BinarySearchTree::findKey(int key) const
 {
 	return findKey(root(), key);
@@ -18,7 +91,7 @@ BinarySearchTree::Node* BinarySearchTree::addKey(Node* root, int key)
 	else if (key < root->key()) {
 		root->setLeftChild(addKey(root->leftChild(), key));
 	}
-	else if(key > root->key()) {
+	else if (key > root->key()) {
 		root->setRightChild(addKey(root->rightChild(), key));
 	}
 	return root;
