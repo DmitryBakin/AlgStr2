@@ -51,7 +51,7 @@ public:
 	int minKey() const;
 
 	Node* addKey(int key);
-	Node* nlrSearch(int key) const;
+	Node* findKey(int key) const;
 
 	bool removeKey(int key);
 	Node* searchParent(Node* root, Node* node) const;
@@ -81,6 +81,7 @@ protected:
 
 	virtual std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const;
 
+	virtual Node* findKey(Node* root, int key) const;
 private:
 	Node* m_root = nullptr;
 
@@ -95,7 +96,7 @@ private:
 
 	int countNodes(Node* node) const;
 
-	Node* nlrSearch(Node* root, int key) const;
+	
 
 
 

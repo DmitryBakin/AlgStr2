@@ -19,8 +19,7 @@ public:
 	using BinaryTree::maxKey;
 	using BinaryTree::nodeHeightIndex;
 	using BinaryTree::getVectorKeys;
-
-	Node* findKey(int key) const;
+	using BinaryTree::findKey;
 
 	BinarySearchTree& operator=(const BinarySearchTree& other) = default;
 	BinarySearchTree& operator=(BinarySearchTree&& other) = default;
@@ -37,8 +36,7 @@ protected:
 
 	std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const override;
 
-private:
-	Node* findKey(Node* root, int key) const;
+	Node* findKey(Node* root, int key) const override;
 };
 
 
