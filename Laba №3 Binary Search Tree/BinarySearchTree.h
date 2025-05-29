@@ -23,6 +23,12 @@ public:
 	using BinaryTree::findKey;
 
 	static BinarySearchTree buildOptimalTree(std::vector<int>& keys, std::vector<int>& frequenciesP, std::vector<int>& frequenciesQ);
+<<<<<<< HEAD
+=======
+
+	Node* findKey(int key) const;
+
+>>>>>>> Laba4
 	BinarySearchTree& operator=(const BinarySearchTree& other) = default;
 	BinarySearchTree& operator=(BinarySearchTree&& other) = default;
 
