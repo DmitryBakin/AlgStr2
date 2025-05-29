@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "../Laba ¹2 Binary Tree/Binary Tree.h"
@@ -21,6 +22,7 @@ public:
 	using BinaryTree::getVectorKeys;
 	using BinaryTree::findKey;
 
+	static BinarySearchTree buildOptimalTree(std::vector<int>& keys, std::vector<int>& frequenciesP, std::vector<int>& frequenciesQ);
 	BinarySearchTree& operator=(const BinarySearchTree& other) = default;
 	BinarySearchTree& operator=(BinarySearchTree&& other) = default;
 
