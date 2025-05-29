@@ -1,5 +1,9 @@
 ﻿#include "Binary Tree.h"
 
+#include <list>
+#include <algorithm>
+#include "iostream"
+
 BinaryTree::Node::Node()
 {}
 
@@ -96,9 +100,9 @@ int BinaryTree::indexNode(int key) const
 	return indexNode(m_root, key);
 }
 
-int BinaryTree::countOfRoots() const
+int BinaryTree::countNodes() const
 {
-	return countOfRoots(m_root);
+	return countNodes(m_root);
 }
 
 int BinaryTree::maxKey() const
@@ -116,9 +120,9 @@ BinaryTree::Node* BinaryTree::addKey(int key)
 	return addKey(m_root, key);
 }
 
-BinaryTree::Node* BinaryTree::nlrSearch(int key) const
+BinaryTree::Node* BinaryTree::findKey(int key) const
 {
-	return nlrSearch(m_root, key);
+	return findKey(m_root, key);
 }
 
 bool BinaryTree::removeKey(int key)
@@ -268,12 +272,12 @@ int BinaryTree::indexNode(Node* root, int key) const
 	return -1;
 }
 
-int BinaryTree::countOfRoots(Node * node) const
+int BinaryTree::countNodes(Node * node) const
 {
 	if (node == nullptr)
 		return 0;
 
-	return (1 + countOfRoots(node->leftChild()) + countOfRoots(node->rightChild()));
+	return (1 + countNodes(node->leftChild()) + countNodes(node->rightChild()));
 }
 
 int BinaryTree::maxKey(Node* node) const
@@ -319,21 +323,21 @@ BinaryTree::Node* BinaryTree::addKey(Node* root, int key)
 	return root;
 }
 
-BinaryTree::Node* BinaryTree::nlrSearch(Node* root, int key) const
+BinaryTree::Node* BinaryTree::findKey(Node* root, int key) const
 {
 	if (!root || root->key() == key) {
 		return root;
 	}
-	Node* subTreeSearchResult = nlrSearch(root->leftChild(), key);
+	Node* subTreeSearchResult = findKey(root->leftChild(), key);
 	if (!subTreeSearchResult) {
-		subTreeSearchResult = nlrSearch(root->rightChild(), key);
+		subTreeSearchResult = findKey(root->rightChild(), key);
 	}
 	return subTreeSearchResult;
 }
 
 bool BinaryTree::removeKey(Node* root, int key)
 {
-    Node* node = nlrSearch(key);
+    Node* node = findKey(key);
     Node* nodeParent = searchParent(root, node);
     
     if (node == nullptr)
@@ -448,7 +452,7 @@ BinaryTree::Node* BinaryTree::searchParent(Node* root, Node *node) const
 
 bool BinaryTree::contains(Node* root, int key) const
 {
-	return nlrSearch(key);
+	return findKey(key);
 }
 
 std::vector<int> BinaryTree::getVectorKeys(Node* root, std::vector<int>& keys) const
