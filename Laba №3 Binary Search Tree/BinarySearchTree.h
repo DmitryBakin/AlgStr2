@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Laba น2 Binary Tree/Binary Tree.h"
+#include "../Laba ยน2 Binary Tree/Binary Tree.h"
 
 
 class BinarySearchTree : public BinaryTree
@@ -19,11 +19,9 @@ public:
 	using BinaryTree::maxKey;
 	using BinaryTree::nodeHeightIndex;
 	using BinaryTree::getVectorKeys;
-
-	static BinarySearchTree buildOptimalTree(std::vector<int>& keys, std::vector<int>& frequenciesP, std::vector<int>& frequenciesQ);
-
-	Node* findKey(int key) const;
-
+	using BinaryTree::findKey;
+  
+  static BinarySearchTree buildOptimalTree(std::vector<int>& keys, std::vector<int>& frequenciesP, std::vector<int>& frequenciesQ);
 	BinarySearchTree& operator=(const BinarySearchTree& other) = default;
 	BinarySearchTree& operator=(BinarySearchTree&& other) = default;
 
@@ -39,8 +37,7 @@ protected:
 
 	std::vector<int> getVectorKeys(Node* root, std::vector<int>& keys) const override;
 
-private:
-	Node* findKey(Node* root, int key) const;
+	Node* findKey(Node* root, int key) const override;
 };
 
 
