@@ -54,15 +54,23 @@ public:
 
 	double encode(const std::string& textFilename, const std::string& encodedTextFilename);
 
+<<<<<<< HEAD
 	bool decode(const std::string& encodedText, std::string& decodedText);
+=======
+	bool decode(const std::string& encodedTextFilename, const std::string& decodedTextFilename);
+>>>>>>> Lab5
 
 private:
 
 	std::string encode(Node* node, const char symbol);
 
+<<<<<<< HEAD
 	bool decode(Node* node, const std::string& encodedText, std::string& decodedText);
 
 	bool decode(std::istream& encodedStream, std::ostream& decodedStream);
+=======
+	char decode(Node* node, std::ifstream& encodedTextFilename);
+>>>>>>> Lab5
 
 	void clear(Node* node);
 
