@@ -9,20 +9,20 @@ HuffmanTree::Node::Node()
 
 std::string HuffmanTree::Node::stringifySymbols() const
 {
-	std::string str;
-	for (int i = 0; i < symbols().length(); ++i)
-	{
-		if (symbols().bitValue(i))
-		{
-			str += char(i);
-		}
-	}
-	return str;
+    std::string str;
+    for (int i = 0; i < symbols().length(); ++i)
+    {
+        if (symbols().bitValue(i))
+        {
+            str += char(i);
+        }
+    }
+    return str;
 }
 
 int HuffmanTree::Node::frequency() const
 {
-	return m_frequency;
+    return m_frequency;
 }
 
 void HuffmanTree::Node::setFrequency(int frequency)
@@ -42,34 +42,34 @@ void HuffmanTree::Node::setSymbols(BoolVector symbols)
 
 HuffmanTree::Node* HuffmanTree::Node::leftChild() const
 {
-	return m_leftChild;
+    return m_leftChild;
 }
 
 HuffmanTree::Node* HuffmanTree::Node::rightChild() const
 {
-	return m_rightChild;
+    return m_rightChild;
 }
 
 void HuffmanTree::Node::setLeftChild(Node* leftChild)
 {
-	m_leftChild = leftChild;
+    m_leftChild = leftChild;
 }
 
 void HuffmanTree::Node::setRightChild(Node* rightChild)
 {
-	m_rightChild = rightChild;
+    m_rightChild = rightChild;
 }
 
 void HuffmanTree::Node::printHorizontal(Node* root, int marginLeft, int levelSpacing) const
 {
-	if (root == nullptr) {
-		return;
-	}
-	printHorizontal(root->rightChild(), marginLeft + levelSpacing, levelSpacing);
-	std::cout << std::string(marginLeft, ' ');
-	std::cout << root->frequency() << ' ' << root->stringifySymbols();
-	std::cout << std::endl;
-	printHorizontal(root->leftChild(), marginLeft + levelSpacing, levelSpacing);
+    if (root == nullptr) {
+        return;
+    }
+    printHorizontal(root->rightChild(), marginLeft + levelSpacing, levelSpacing);
+    std::cout << std::string(marginLeft, ' ');
+    std::cout << root->frequency() << ' ' << root->stringifySymbols();
+    std::cout << std::endl;
+    printHorizontal(root->leftChild(), marginLeft + levelSpacing, levelSpacing);
 }
 
 HuffmanTree::~HuffmanTree()
@@ -78,19 +78,19 @@ HuffmanTree::~HuffmanTree()
 
 void HuffmanTree::clear()
 {
-	clear(m_root);
-	m_root = nullptr;
+    clear(m_root);
+    m_root = nullptr;
 }
 
 void HuffmanTree::print()
 {
-	m_root->printHorizontal(m_root, 0, 15);
+    m_root->printHorizontal(m_root, 0, 15);
 }
 
 void HuffmanTree::build(const std::string& textFilename)
 {
     std::string text;
-    
+
     std::ifstream textFile;
     textFile.open(textFilename);
 
@@ -152,12 +152,12 @@ void HuffmanTree::build(const std::string& textFilename)
             return a->frequency() < b->frequency();
         };
     std::sort(nodes.begin(), nodes.end(), sorter);
-    
+
     while (nodes.size() > 1)
     {
         Node* root = new Node();
         root->setFrequency(nodes[0]->frequency() + nodes[1]->frequency());
-        
+
         BoolVector BV = root->symbols();
 
         for (int i = 0; i < root->symbols().length(); ++i)
@@ -166,7 +166,7 @@ void HuffmanTree::build(const std::string& textFilename)
         }
 
         root->setSymbols(BV);
-        
+
         root->setLeftChild(nodes[0]);
         root->setRightChild(nodes[1]);
 
@@ -177,10 +177,7 @@ void HuffmanTree::build(const std::string& textFilename)
 
     m_root = nodes.front();
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> Lab5
 bool isEndFile(const std::string& fileBI);
 
 double HuffmanTree::encode(const std::string& textFilename, const std::string& encodedTextFilename)
@@ -190,11 +187,7 @@ double HuffmanTree::encode(const std::string& textFilename, const std::string& e
 
     std::string encodedText;
 
-<<<<<<< HEAD
-    int textFileSize = 0;
-=======
     int encodedTextSize = 0;
->>>>>>> Lab5
     char symbol;
 
     textFile.open(textFilename);
@@ -213,19 +206,6 @@ double HuffmanTree::encode(const std::string& textFilename, const std::string& e
     }
 
     textFile >> symbol;
-<<<<<<< HEAD
-
-    while(textFile.good())
-    {
-        encodedText += encode(m_root, symbol);
-
-        textFile >> symbol;
-        
-        textFileSize++;
-    }
-
-    double compresСoef = encodedText.size() / (textFileSize * 8.);
-=======
     if (!m_root->leftChild() && !m_root->rightChild())
     {
         while (textFile.good())
@@ -236,9 +216,9 @@ double HuffmanTree::encode(const std::string& textFilename, const std::string& e
         }
         encodedTextSize = m_root->frequency();
     }
-    else 
+    else
     {
-        while (textFile.good()) 
+        while (textFile.good())
         {
             for (int i = 0; i < encode(m_root, symbol).size(); i++)
             {
@@ -251,7 +231,6 @@ double HuffmanTree::encode(const std::string& textFilename, const std::string& e
 
 
     double compresСoef = encodedTextSize / (m_root->frequency() * 8.);
->>>>>>> Lab5
 
     for (int i = 0; i < encodedText.size(); i++)
     {
@@ -264,15 +243,7 @@ double HuffmanTree::encode(const std::string& textFilename, const std::string& e
     return compresСoef;
 }
 
-<<<<<<< HEAD
-bool HuffmanTree::decode(const std::string& encodedText, std::string& decodedText)
-{
-    return true;
-}
-
-
-=======
-bool HuffmanTree::decode(const std::string& encodedTextFilename,const std::string& decodedTextFilename)
+bool HuffmanTree::decode(const std::string& encodedTextFilename, const std::string& decodedTextFilename)
 {
 
     std::ifstream encodedTextFile;
@@ -298,7 +269,6 @@ bool HuffmanTree::decode(const std::string& encodedTextFilename,const std::strin
 
     return true;
 }
->>>>>>> Lab5
 
 std::string HuffmanTree::encode(Node* node, const char symbol)
 {
@@ -322,22 +292,7 @@ std::string HuffmanTree::encode(Node* node, const char symbol)
     return str;
 }
 
-<<<<<<< HEAD
-bool HuffmanTree::decode(Node* node, const std::string& encodedText, std::string& decodedText)
-{
-    if (node->leftChild() == nullptr && node->rightChild() == nullptr)
-    {
-        return true;
-    }
-
-    return true;
-}
-
-bool HuffmanTree::decode(std::istream& encodedStream, std::ostream& decodedStream)
-{
-    return false;
-=======
-char HuffmanTree::decode(Node* node,std::ifstream& encodedTextFile)
+char HuffmanTree::decode(Node* node, std::ifstream& encodedTextFile)
 {
     char symbol, letter;
     if (!encodedTextFile.good())
@@ -361,25 +316,20 @@ char HuffmanTree::decode(Node* node,std::ifstream& encodedTextFile)
     }
 
     return letter;
->>>>>>> Lab5
 }
 
 void HuffmanTree::clear(Node* node)
 {
-	if (node == nullptr)
-		return;
+    if (node == nullptr)
+        return;
 
-	clear(node->leftChild());
-	clear(node->rightChild());
+    clear(node->leftChild());
+    clear(node->rightChild());
 
-	delete node;
-	node = nullptr;
+    delete node;
+    node = nullptr;
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> Lab5
 bool isEndFile(const std::string& fileBI)
 {
     std::ifstream fileB(fileBI);
