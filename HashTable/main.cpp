@@ -1,22 +1,40 @@
 ﻿#include "HashTable.h"
 
+#include <string>
+
 int main()
 {
-    HashTable<std::string> HT(new QuadraticHashFunction(), 6);
+    HashTable<std::string> HT(new QuadraticHashFunction(), 10000);
 
-    HT.insert(23, "1234");
-    HT.insert(65, "1234");
-    HT.insert(75, "1234");
-    HT.insert(2, "1234");
-    HT.insert(8, "1234");
-    HT.insert(5, "1234");
-    HT.insert(9, "1234");
+    srand(0);
+    for (int i = 0; i < 100000; i++)
+    {
+        if (i % 10000 == 0)
+        {
+            std::cout << i << "\n";
+        }
+        int index = rand() % 1000;
+        std::string str = "Sanaa-Mergen." + std::to_string(index);
+        HT.insert(i, str);
+    }
 
     std::cout << HT;
 
-    HT.removeKey(9);
+    //HT.setFunction(new MultiplicationHashFunction());
 
-    std::cout << "\n\n\n" << HT;
+    //std::cout << "\n\n\n" << HT;
+
+    //HT.setFunction(new ThirdHashFunction());
+
+    //std::cout << "\n\n\n" << HT;
+
+    //HT.setCapacity(10);
+
+    //std::cout << "\n\n\n" << HT;
+
+    //HT.setCapacity(3);
+
+    //std::cout << "\n\n\n" << HT;
     /*
     for (int i = 0; i < HT.capacity(); i++)
     {

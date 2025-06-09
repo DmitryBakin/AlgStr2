@@ -1,8 +1,8 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
-#include <list>
 #include <utility>
+
 #include "/O-O-P/List/List.h"
 
 
@@ -62,6 +62,7 @@ public:
     void setCapacity(int capacity);
     int capacity() const;
 
+    void setFunction(IHashFunction* someFunction);
     IHashFunction* hashFunction() const;
 
     std::vector<List<std::pair<int, T>>> hashTable() const;
@@ -77,11 +78,12 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const HashTable<T>& other);
 
 private:
+
     IHashFunction* m_hashFunction = nullptr;
 
     std::vector<List<std::pair<int, T>>> m_hashTable;
-    int m_capacity = 0;
 
+    int m_capacity = 0;
 };
 
 template <typename T>
@@ -103,20 +105,59 @@ HashTable<T>::HashTable(const HashTable& other)
 
 template <typename T>
 HashTable<T>::~HashTable()
-{
-    delete m_hashFunction;
-}
+{}
 
 template <typename T>
 void HashTable<T>::setCapacity(int capacity)
 {
+    HashTable<T> HTcopy(*this);
+
+    m_hashTable.clear();
+
+    for (int i = 0; i < capacity; i++)
+    {
+        List<std::pair<int, T>> list = List<std::pair<int, T>>();
+        m_hashTable.push_back(list);
+    }
+
     m_capacity = capacity;
+
+    for (int i = 0; i < HTcopy.capacity(); i++)
+    {
+        for (int j = 0; j < HTcopy.hashTable()[i].size(); j++)
+        {
+            insert(HTcopy.hashTable()[i][j].first, HTcopy.hashTable()[i][j].second);
+        }
+    }
+
+    
 }
 
 template <typename T>
 int HashTable<T>::capacity() const
 {
     return m_capacity;
+}
+
+template<typename T>
+void HashTable<T>::setFunction(IHashFunction* someFunction)
+{
+    HashTable<T> HTcopy(*this);
+
+    for (int i = 0; i < m_hashTable.size(); i++)
+    {
+        m_hashTable[i].clear();
+    }
+
+    m_hashFunction = someFunction;
+
+    for (int i = 0; i < HTcopy.capacity(); i++)
+    {
+        for (int j = 0; j < HTcopy.hashTable()[i].size(); j++)
+        {
+            insert(HTcopy.hashTable()[i][j].first, HTcopy.hashTable()[i][j].second);
+        }
+    }
 }
 
 template<typename T>
@@ -139,7 +180,7 @@ bool HashTable<T>::contains(const int& key) const
     for (int i = 0; i < m_hashTable[hash].size(); i++)
     {
         if (m_hashTable[hash][i].first == key)
-        { 
+        {
             return true;
         }
     }
@@ -220,8 +261,8 @@ std::ostream& operator<<(std::ostream& os, HashTable<T>& other)
 - обмен содержимым с другой таблицей (swap); +
 - вывод содержимого таблицы в консоль (в каждой строке выводить хеш, после этого все связанные с ним пары "ключ-значение"); +
 - вывод содержимого таблицы на форму (Qt);
-- замена хеш-функции (места для уже добавленных элементов должны быть пересчитаны в соответствии с новой функцией);
-- изменение размера хеш-таблицы;
+- замена хеш-функции (места для уже добавленных элементов должны быть пересчитаны в соответствии с новой функцией); +
+- изменение размера хеш-таблицы; +
 - оператор присваивания;
 - получение ссылки на значение по ключу (operator []).
 */
