@@ -20,8 +20,8 @@ class HuffmanTree
 		int frequency() const;
 		void setFrequency(int frequency);
 
-		BoolVector symbols() const;
-		void setSymbols(BoolVector symbols);
+		const BoolVector& symbols() const;
+		void setSymbols(const BoolVector& symbols);
 
 		Node* leftChild() const;
 		Node* rightChild() const;
@@ -29,18 +29,15 @@ class HuffmanTree
 		void setLeftChild(Node* leftChild);
 		void setRightChild(Node* rightChild);
 
-		void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
+		
+
+	private:
+		int m_frequency = 1;
 
 		BoolVector m_symbols = BoolVector(256, 0);
 
-	private:
-
-
-		int m_frequency = 1;
-
 		Node* m_leftChild = nullptr;
 		Node* m_rightChild = nullptr;
-
 	};
 public:
 	HuffmanTree() = default;
@@ -50,7 +47,7 @@ public:
 
 	void print();
 
-	void build(const std::string& text);
+	void build(const std::string& textFilename);
 
 	double encode(const std::string& textFilename, const std::string& encodedTextFilename);
 
@@ -64,6 +61,7 @@ private:
 
 	void clear(Node* node);
 
+	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 private:
 	Node* m_root = nullptr;
 
