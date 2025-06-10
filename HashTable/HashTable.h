@@ -65,7 +65,11 @@ public:
     void setFunction(IHashFunction* someFunction);
     IHashFunction* hashFunction() const;
 
+    void setValue(int key, T value);
+
     std::vector<List<std::pair<int, T>>> hashTable() const;
+
+    void clear();
 
     bool contains(const int& key) const;
     int indexKey(const int& key) const;
@@ -74,6 +78,10 @@ public:
     void removeKey(const int& key);
 
     void swap(HashTable& other);
+
+    T& operator[](int const key);
+
+    HashTable<T>& operator=(const HashTable<T>& other);
 
     friend std::ostream& operator<<(std::ostream& os, const HashTable<T>& other);
 
@@ -139,6 +147,19 @@ int HashTable<T>::capacity() const
     return m_capacity;
 }
 
+template <typename T>
+void HashTable<T>::setValue(int key, T value)
+{
+    int hash = m_hashFunction->hash(key, m_capacity);
+    for(int i = 0; i < m_hashTable[hash].size(); i++)
+    {
+        if(m_hashTable[hash][i].first == key)
+            m_hashTable[hash][i].second = value;
+        return;
+    }
+
+}
+
 template<typename T>
 void HashTable<T>::setFunction(IHashFunction* someFunction)
 {
@@ -173,6 +194,12 @@ std::vector<List<std::pair<int, T>>> HashTable<T>::hashTable() const
 }
 
 template<typename T>
+void HashTable<T>::clear()
+{
+    m_hashTable.clear();
+}
+
+template<typename T>
 bool HashTable<T>::contains(const int& key) const
 {
     int hash = m_hashFunction->hash(key, m_capacity);
@@ -188,7 +215,7 @@ bool HashTable<T>::contains(const int& key) const
 }
 
 template<typename T>
-inline int HashTable<T>::indexKey(const int& key) const
+int HashTable<T>::indexKey(const int& key) const
 {
     int hash = m_hashFunction->hash(key, m_capacity);
 
@@ -235,6 +262,30 @@ void HashTable<T>::swap(HashTable& other)
     std::swap(m_hashTable, other.m_hashTable);
 }
 
+template<typename T>
+T& HashTable<T>::operator[](int const key)
+{
+    int hash = m_hashFunction->hash(key, m_capacity);
+
+    for (int i = 0; i < m_hashTable[hash].size(); i++)
+    {
+        if (m_hashTable[hash][i].first == key)
+        {
+            return m_hashTable[hash][i].second;
+        }
+    }
+}
+
+template<typename T>
+HashTable<T>& HashTable<T>::operator=(const HashTable<T>& other)
+{
+    clear();
+
+    m_hashTable = other.hashTable();
+    return *this;
+
+}
+
 template <typename T>
 std::ostream& operator<<(std::ostream& os, HashTable<T>& other)
 {
@@ -250,19 +301,3 @@ std::ostream& operator<<(std::ostream& os, HashTable<T>& other)
     return os;
 }
 
-
-
-/*Необходимые методы класса:
-- конструкторы (по умолчанию +, копирования +);
-- деструктор; +
-- добавление элемента с заданным ключом в таблицу; +
-- удаление элемента из таблицы по ключу; +
-- проверка наличия в таблице элемента с заданным ключом; +
-- обмен содержимым с другой таблицей (swap); +
-- вывод содержимого таблицы в консоль (в каждой строке выводить хеш, после этого все связанные с ним пары "ключ-значение"); +
-- вывод содержимого таблицы на форму (Qt);
-- замена хеш-функции (места для уже добавленных элементов должны быть пересчитаны в соответствии с новой функцией); +
-- изменение размера хеш-таблицы; +
-- оператор присваивания;
-- получение ссылки на значение по ключу (operator []).
-*/
