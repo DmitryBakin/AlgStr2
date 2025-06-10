@@ -28,7 +28,7 @@ public:
     {
         if (TableElementWidget->objectName().isEmpty())
             TableElementWidget->setObjectName(QString::fromUtf8("TableElementWidget"));
-        TableElementWidget->resize(124, 22);
+        TableElementWidget->resize(190, 49);
         QFont font;
         font.setPointSize(24);
         TableElementWidget->setFont(font);
@@ -55,6 +55,7 @@ public:
     void retranslateUi(QWidget *TableElementWidget)
     {
         TableElementWidget->setWindowTitle(QCoreApplication::translate("TableElementWidget", "Form", nullptr));
+        lineEdit_key->setInputMask(QString());
     } // retranslateUi
 
 };

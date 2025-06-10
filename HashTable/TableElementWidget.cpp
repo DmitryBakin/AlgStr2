@@ -1,3 +1,6 @@
+#include <QPalette>
+#include <QColor>
+
 #include "TableElementWidget.h"
 #include "ui_TableElementWidget.h"
 
@@ -39,7 +42,7 @@ void TableElementWidget::itemIsEditable()
 {
     ui->lineEdit_value->setEnabled(1);
 }
-void TableElementWidget::allItemIsNotEditable()
+void TableElementWidget::itemIsNotEditable()
 {
     ui->lineEdit_key->setEnabled(0);
     ui->lineEdit_value->setEnabled(0);
@@ -50,12 +53,11 @@ bool TableElementWidget::isEmpty() const
     return ui->lineEdit_key->text().isEmpty();
 }
 
-
-
 void TableElementWidget::clear()
 {
     ui->lineEdit_key->clear();
     ui->lineEdit_value->clear();
+
 }
 
 void TableElementWidget::onValueChanged(const QString &value)
@@ -64,4 +66,12 @@ void TableElementWidget::onValueChanged(const QString &value)
     {
         emit valueChanged(key(), value);
     }
+}
+
+void TableElementWidget::changeColor(const QColor& color)
+{
+
+    QPalette palette = ui->lineEdit_key->palette();
+    palette.setColor(QPalette::Text, color);
+    ui->lineEdit_key->setPalette(palette);
 }

@@ -24,27 +24,11 @@ public:
     ~BaseHashTableWidget() override;
 
 protected slots:
-    /**
-     * @brief слот, вызывающийся при изменении значения элемента с помощью формы.
-     * @param key ключ элемента.
-     * @param value новое значение элемента.
-     */
     void onValueChanged(int key, const QString &value);
-
-    /**
-     * @brief слот, вызывающийся при добавлении элемента в таблицу с помощью формы.
-     * Ключ и значение можно получить через указатели `ui->spinBox_key` и `ui->lineEdit_value`
-     */
     virtual void addKeyValue() = 0;
-
-    /**
-     * @brief слот, вызывающийся при изменении размера таблицы с помощью формы.
-     * Новый размер таблицы можно получить через указатель `ui->spinBox_size`.
-     */
+    virtual void removeKeyValue() = 0;
+    virtual void findKey() = 0;
     virtual void resizeTable() = 0;
-
-
-
     virtual void changeFunction(int index) = 0;
 
 protected:

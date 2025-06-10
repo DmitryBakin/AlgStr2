@@ -44,6 +44,26 @@ void SceneHashTableWidget::addKeyValue()
     m_rows[row][column].widget->itemIsEditable();
 }
 
+void SceneHashTableWidget::removeKeyValue()
+{
+    m_hashTable.removeKey(ui->spinBox_key->value());
+
+    SceneHashTableWidget::resizeTable();
+}
+
+void SceneHashTableWidget::findKey()
+{
+    int hash = m_hashTable.hashFunction()->hash(ui->spinBox_key->value(), m_hashTable.capacity());
+    for(int i = 0; i < m_hashTable.hashTable()[hash].size(); i++)
+    {
+        if(m_hashTable.hashTable()[hash][i].first == ui->spinBox_key->value())
+        {
+            m_rows[hash][i].widget->changeColor(Qt::green);
+            return;
+        }
+    }
+}
+
 void SceneHashTableWidget::resizeTable()
 {
     // TODO: resize хеш-таблицы
@@ -112,7 +132,7 @@ void SceneHashTableWidget::changeFunction(int index)
 void SceneHashTableWidget::addBlankElement(int row, int column)
 {
     TableElementWidget *item = new TableElementWidget();
-    item->allItemIsNotEditable();
+    item->itemIsNotEditable();
 
     connect(item, &TableElementWidget::valueChanged, this, &SceneHashTableWidget::onValueChanged);
 

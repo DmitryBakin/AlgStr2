@@ -20,7 +20,10 @@ public:
 
 protected slots:
     void addKeyValue() override;
+    void removeKeyValue() override;
+    void findKey() override;
     void resizeTable() override;
+
 
     void changeFunction(int index) override;
 

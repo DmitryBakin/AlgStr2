@@ -20,23 +20,16 @@ public:
 
     int key() const;
     QString value() const;
-
     void setKey(int key);
     void setValue(const QString &value);
-
     void itemIsEditable();
+    void itemIsNotEditable();
 
-    void allItemIsNotEditable();
-
-    /**
-     * @brief Возвращает true если у элемента не задан ключ.
-     */
     bool isEmpty() const;
 
-    /**
-     * @brief Очищает значения полей ключа и значения.
-     */
     void clear();
+
+    void changeColor(const QColor& color);
 
 signals:
     /**
