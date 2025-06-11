@@ -3,7 +3,7 @@
 #include <vector>
 #include <utility>
 
-#include "/O-O-P/List/List.h"
+#include "List/List.h"
 
 
 class IHashFunction
@@ -18,9 +18,10 @@ public:
     int hash(const int& key, const int& capacity) const override
     {
         int hash0 = key % capacity;
-        int hash = (hash0 + 2) % capacity;
 
-        return hash;
+        int hash = (hash0 + 4) % capacity;
+
+        return abs(hash);
     }
 };
 
@@ -34,7 +35,7 @@ public:
 
         int hash = int(hash0 * a * capacity) % capacity;
 
-        return hash;
+        return abs(hash);
     }
 };
 
@@ -46,7 +47,7 @@ public:
         int hash0 = key % capacity;
         int hash = ((hash0 + 1) * (1 + key % (capacity - 2))) % capacity;
 
-        return hash;
+        return abs(hash);
     }
 };
 
@@ -87,7 +88,7 @@ public:
 
 private:
 
-    IHashFunction* m_hashFunction = nullptr;
+    IHashFunction* m_hashFunction = new QuadraticHashFunction();
 
     std::vector<List<std::pair<int, T>>> m_hashTable;
 
@@ -113,7 +114,11 @@ HashTable<T>::HashTable(const HashTable& other)
 
 template <typename T>
 HashTable<T>::~HashTable()
-{}
+{
+    m_hashFunction = nullptr;
+
+    delete m_hashFunction;
+}
 
 template <typename T>
 void HashTable<T>::setCapacity(int capacity)
@@ -137,8 +142,6 @@ void HashTable<T>::setCapacity(int capacity)
             insert(HTcopy.hashTable()[i][j].first, HTcopy.hashTable()[i][j].second);
         }
     }
-
-    
 }
 
 template <typename T>
@@ -154,8 +157,11 @@ void HashTable<T>::setValue(int key, T value)
     for(int i = 0; i < m_hashTable[hash].size(); i++)
     {
         if(m_hashTable[hash][i].first == key)
+        {
             m_hashTable[hash][i].second = value;
-        return;
+            return;
+        }
+
     }
 
 }
@@ -226,7 +232,7 @@ int HashTable<T>::indexKey(const int& key) const
             return i;
         }
     }
-    return false;
+    return -1;
 }
 
 template <typename T>
@@ -244,14 +250,15 @@ void HashTable<T>::insert(const int& key, const T& value)
 template<typename T>
 void HashTable<T>::removeKey(const int& key)
 {
-    int index = indexKey(key);
-    if (index == -1)
-    {
-        return;
-    }
-    int hash = m_hashFunction->hash(key, m_capacity);
 
-    m_hashTable[hash].deleteElementFromPosition(index);
+    int hash = m_hashFunction->hash(key, m_capacity);
+    for(int i = 0; i < m_hashTable[hash].size(); i++)
+    {
+        if(m_hashTable[hash][i].first == key)
+        {
+            m_hashTable[hash].deleteElementFromPosition(i);
+        }
+    }
 }
 
 template<typename T>

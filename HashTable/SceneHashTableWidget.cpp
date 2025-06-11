@@ -14,9 +14,35 @@ SceneHashTableWidget::SceneHashTableWidget(QWidget *parent)
     m_view->setScene(m_scene);
     ui->verticalLayout->insertWidget(0, m_view);
 
-    m_hashTable.setFunction(new QuadraticHashFunction());
-
     SceneHashTableWidget::resizeTable();
+/*
+    int size = 10000;
+    QList<int> keys;
+    for (int i = 0; i < size; ++i)
+    {
+        keys.append(i);
+    }
+    QList<int> backup = keys;
+
+    while (!keys.isEmpty())
+    {
+        int key = keys.takeAt(rand() % keys.size());
+//        ui->spinBox_key->setValue(key);
+//        ui->lineEdit_value->setText(QString::number(key));
+        m_hashTable.insert(key, QString::number(key));
+//        SceneHashTableWidget::addKeyValue();
+    }
+
+//    changeFunction(2);
+
+    keys = backup;
+    while (!keys.isEmpty())
+    {
+        int key = keys.takeAt(rand() % keys.size());
+        m_hashTable.removeKey(key);
+//        ui->spinBox_key->setValue(key);
+//        SceneHashTableWidget::removeKeyValue();
+    }*/
 }
 
 void SceneHashTableWidget::addKeyValue()
@@ -47,7 +73,6 @@ void SceneHashTableWidget::addKeyValue()
 void SceneHashTableWidget::removeKeyValue()
 {
     m_hashTable.removeKey(ui->spinBox_key->value());
-
     SceneHashTableWidget::resizeTable();
 }
 

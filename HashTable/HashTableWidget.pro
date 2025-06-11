@@ -19,6 +19,7 @@ HEADERS += \
     BaseHashTableWidget.h \
     HashTable.h \
     HashTableWidget.h \
+    List/List.h \
     SceneHashTableWidget.h \
     TableElementWidget.h
 

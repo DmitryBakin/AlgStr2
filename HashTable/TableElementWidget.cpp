@@ -72,6 +72,7 @@ void TableElementWidget::changeColor(const QColor& color)
 {
 
     QPalette palette = ui->lineEdit_key->palette();
-    palette.setColor(QPalette::Text, color);
+    palette.setColor(QPalette::Base, color);
     ui->lineEdit_key->setPalette(palette);
+    //ui->lineEdit_value->setPalette(palette);
 }

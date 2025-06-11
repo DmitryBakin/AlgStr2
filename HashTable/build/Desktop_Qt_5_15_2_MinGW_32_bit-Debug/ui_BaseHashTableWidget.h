@@ -75,7 +75,9 @@ public:
 
         spinBox_size = new QSpinBox(BaseHashTableWidget);
         spinBox_size->setObjectName(QString::fromUtf8("spinBox_size"));
-        spinBox_size->setMinimum(1);
+        spinBox_size->setMinimum(3);
+        spinBox_size->setMaximum(100000000);
+        spinBox_size->setValue(3);
 
         gridLayout->addWidget(spinBox_size, 0, 1, 1, 1);
 
