@@ -10,6 +10,8 @@ class IHashFunction
 {
 public:
     virtual int hash(const int& key, const int& capacity) const = 0;
+
+    virtual IHashFunction* copy() const = 0;
 };
 
 class QuadraticHashFunction : public IHashFunction
@@ -22,6 +24,11 @@ public:
         int hash = (hash0 + 4) % capacity;
 
         return abs(hash);
+    }
+
+    IHashFunction* copy() const override
+    {
+        return new QuadraticHashFunction();
     }
 };
 
@@ -37,6 +44,11 @@ public:
 
         return abs(hash);
     }
+
+    IHashFunction* copy() const override
+    {
+        return new MultiplicationHashFunction();
+    }
 };
 
 class ThirdHashFunction : public IHashFunction
@@ -48,6 +60,11 @@ public:
         int hash = ((hash0 + 1) * (1 + key % (capacity - 2))) % capacity;
 
         return abs(hash);
+    }
+
+    IHashFunction* copy() const override
+    {
+        return new ThirdHashFunction();
     }
 };
 
@@ -108,15 +125,14 @@ HashTable<T>::HashTable(IHashFunction* hashFunction, int capacity)
 
 template <typename T>
 HashTable<T>::HashTable(const HashTable& other)
-    :m_capacity(other.capacity()), m_hashFunction(other.hashFunction()), m_hashTable(other.hashTable())
+    :m_capacity(other.capacity()), m_hashTable(other.hashTable())
 {
+    m_hashFunction = other.hashFunction()->copy();
 }
 
 template <typename T>
 HashTable<T>::~HashTable()
 {
-    m_hashFunction = nullptr;
-
     delete m_hashFunction;
 }
 
